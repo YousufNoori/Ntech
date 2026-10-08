@@ -53,45 +53,12 @@ const defaultRaqamReviews: Review[] = [
   }
 ];
 
-const defaultNexaReviews: Review[] = [
-  {
-    id: 'seed-nexa-1',
-    name: 'Hamza Tariq (Islamabad)',
-    comment: 'The 8K and 4K video playback is insanely smooth! HW+ acceleration plays heavy iPhone MOV and HEVC files without stuttering or battery drain.',
-    rating: 5,
-    date: '02 Oct 2026',
-    appId: 'nexa-player'
-  },
-  {
-    id: 'seed-nexa-2',
-    name: 'DJ Bilal Studio (Karachi)',
-    comment: 'Best 10-band hardware equalizer on Android! The bass boost and 3D reverb make standard earphones sound like high-end studio monitors.',
-    rating: 5,
-    date: '30 Sep 2026',
-    appId: 'nexa-player'
-  },
-  {
-    id: 'seed-nexa-3',
-    name: 'Kashif Mehmood',
-    comment: 'Background video playback aur floating Picture-in-Picture (PiP) window bohot zabardast feature hai. WhatsApp use karte waqt lectures dekhna aasan ho gaya!',
-    rating: 5,
-    date: '28 Sep 2026',
-    appId: 'nexa-player'
-  },
-  {
-    id: 'seed-nexa-4',
-    name: 'Zain Ali (Multan)',
-    comment: 'Pure AMOLED black theme saves tons of battery. Gesture volume/brightness swipe controls and auto subtitle finder work flawlessly.',
-    rating: 5,
-    date: '25 Sep 2026',
-    appId: 'nexa-player'
-  }
-];
+const defaultNexaReviews: Review[] = [];
 
 export function useAppReviewsStats(targetAppId: 'raqam-flow' | 'nexa-player') {
   const [stats, setStats] = useState({
-    rating: targetAppId === 'raqam-flow' ? 4.9 : 4.8,
-    totalReviews: targetAppId === 'raqam-flow' ? 18 : 14,
+    rating: targetAppId === 'raqam-flow' ? 4.9 : 0.0,
+    totalReviews: targetAppId === 'raqam-flow' ? 18 : 0,
     loading: true
   });
 
@@ -114,7 +81,7 @@ export function useAppReviewsStats(targetAppId: 'raqam-flow' | 'nexa-player') {
         const seedSum = seedList.reduce((acc, curr) => acc + curr.rating, 0);
         const totalCount = seedList.length + count;
         const totalSum = seedSum + sum;
-        const avg = (totalSum / totalCount).toFixed(1);
+        const avg = totalCount > 0 ? (totalSum / totalCount).toFixed(1) : '0.0';
 
         setStats({
           rating: Number(avg),
@@ -123,6 +90,14 @@ export function useAppReviewsStats(targetAppId: 'raqam-flow' | 'nexa-player') {
         });
       }, (err) => {
         console.warn('Reviews stats listener error:', err);
+        const seedList = targetAppId === 'raqam-flow' ? defaultRaqamReviews : defaultNexaReviews;
+        const seedSum = seedList.reduce((acc, curr) => acc + curr.rating, 0);
+        const avg = seedList.length > 0 ? (seedSum / seedList.length).toFixed(1) : '0.0';
+        setStats({
+          rating: Number(avg),
+          totalReviews: seedList.length,
+          loading: false
+        });
       });
       return () => unsubscribe();
     } catch (e) {
@@ -181,7 +156,8 @@ export function ReviewsSection({
   const [submitting, setSubmitting] = useState(false);
   const [name, setName] = useState('');
   const [comment, setComment] = useState('');
-  const [rating, setRating] = useState(5);
+  const [rating, setRating] = useState(0);
+  const [ratingError, setRatingError] = useState(false);
   const [successMsg, setSuccessMsg] = useState(false);
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -246,6 +222,11 @@ export function ReviewsSection({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !comment.trim() || submitting) return;
+    if (rating === 0) {
+      setRatingError(true);
+      return;
+    }
+    setRatingError(false);
     
     setSubmitting(true);
     try {
@@ -258,7 +239,7 @@ export function ReviewsSection({
       });
       setName('');
       setComment('');
-      setRating(5);
+      setRating(0);
       setSuccessMsg(true);
       setTimeout(() => setSuccessMsg(false), 4000);
     } catch (error) {
@@ -314,10 +295,14 @@ export function ReviewsSection({
             <span className="text-sm font-medium">Connecting to Firebase Cloud database...</span>
           </div>
         ) : reviews.length === 0 ? (
-          <div className="text-center py-12 px-6 bg-[#0c1c24] rounded-2xl border border-dashed border-slate-700">
+          <div className="text-center py-12 px-6 bg-[#0c1c24] rounded-2xl border border-dashed border-slate-700/80">
             <MessageCircle className={`w-12 h-12 ${accentText}/50 mx-auto mb-3`} />
-            <p className="text-base font-bold text-white">Pehla Review Aap Likhein!</p>
-            <p className="text-xs text-slate-400 mt-1 font-urdu">آپ کا ریویو فورا نئون کارڈ میں نیچے ڈسپلے ہوگا اور کلاؤڈ میں سیو رہے گا۔</p>
+            <p className="text-base font-bold text-white">
+              {appName} par pehla review aap post karein!
+            </p>
+            <p className="text-xs text-slate-400 mt-1 font-urdu">
+              ابھی تک کوئی ریویو موجود نہیں ہے۔ اپنا جائزہ اور اسٹار ریٹنگ نیچے دیے گئے فارم میں درج کریں اور فورا لائیو دیکھیں۔
+            </p>
           </div>
         ) : (
           <div className="relative group/carousel">
@@ -458,20 +443,38 @@ export function ReviewsSection({
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1.5">
-                Select Rating (اسٹار سلیکشن)
-              </label>
-              <div className="flex items-center space-x-2 bg-[#10222a] border border-slate-800 rounded-xl px-4 py-2">
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-xs font-bold text-slate-300">
+                  Select Rating (اسٹار سلیکشن)
+                </label>
+                {ratingError && (
+                  <span className="text-[11px] text-rose-400 font-bold animate-pulse">
+                    Please select 1 to 5 stars!
+                  </span>
+                )}
+              </div>
+              <div className={`flex items-center space-x-1.5 bg-[#10222a] border ${ratingError ? 'border-rose-500/80 ring-1 ring-rose-500' : 'border-slate-800'} rounded-xl px-4 py-2 transition-all`}>
                 {[1, 2, 3, 4, 5].map(star => (
-                  <Star 
-                    key={star} 
-                    onClick={() => setRating(star)}
-                    className={`w-6 h-6 cursor-pointer transition-transform hover:scale-125 ${
-                      star <= rating ? 'text-amber-400 fill-amber-400' : 'text-slate-600'
-                    }`} 
-                  />
+                  <button
+                    type="button"
+                    key={star}
+                    onClick={() => {
+                      setRating(star);
+                      setRatingError(false);
+                    }}
+                    className="focus:outline-none p-0.5 group transition-transform active:scale-95"
+                    aria-label={`${star} Star`}
+                  >
+                    <Star 
+                      className={`w-6 h-6 cursor-pointer transition-transform group-hover:scale-125 ${
+                        star <= rating ? 'text-amber-400 fill-amber-400' : 'text-slate-600 group-hover:text-amber-300'
+                      }`} 
+                    />
+                  </button>
                 ))}
-                <span className="text-xs font-extrabold text-amber-400 ml-2">{rating}.0 Stars</span>
+                <span className={`text-xs font-extrabold ml-2 ${rating > 0 ? 'text-amber-400' : 'text-slate-500'}`}>
+                  {rating > 0 ? `${rating}.0 Stars` : 'Tap to rate (1-5)'}
+                </span>
               </div>
             </div>
           </div>

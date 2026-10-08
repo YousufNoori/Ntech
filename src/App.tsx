@@ -58,6 +58,38 @@ export default function App() {
     document.documentElement.classList.add('dark');
   }, []);
 
+  useEffect(() => {
+    switch (currentPage) {
+      case 'nexa-player':
+        document.title = 'Nexa Player';
+        break;
+      case 'raqam-flow':
+        document.title = 'Raqam Flow';
+        break;
+      case 'about':
+        document.title = 'About - NooriTech';
+        break;
+      case 'contact':
+        document.title = 'Contact - NooriTech';
+        break;
+      case 'faq':
+        document.title = 'FAQ - NooriTech';
+        break;
+      case 'privacy':
+      case 'universal-privacy':
+        document.title = 'Privacy Policy - NooriTech';
+        break;
+      case 'terms':
+      case 'universal-terms':
+        document.title = 'Terms & Conditions - NooriTech';
+        break;
+      case 'apps':
+      default:
+        document.title = 'NooriTech';
+        break;
+    }
+  }, [currentPage]);
+
   const navigateTo = (page: Page) => {
     const paths: Record<Page, string> = {
       'apps': '/',

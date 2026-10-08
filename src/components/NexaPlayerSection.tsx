@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { NexaPlayerShowcase3D } from './NexaPlayerShowcase3D';
 import { trackApkDownload, LiveStatsBanner, useLiveDownloads } from './LiveStatsBanner';
-import { ReviewsSection } from './ReviewsSection';
+import { ReviewsSection, useAppReviewsStats } from './ReviewsSection';
 import { useVersionConfig } from '../lib/useVersionConfig';
 
 const NEXA_APK_URL = 'https://www.dropbox.com/scl/fi/di72yn79zdpb7h3azdwml/NexaPlay-V1.1.0.apk?rlkey=60tbyy1ww3owmv3qw2hc91vcq&st=wdodpuac&dl=1';
@@ -21,6 +21,7 @@ export function NexaPlayerSection({ navigateTo }: NexaPlayerSectionProps) {
   const [downloadSuccess, setDownloadSuccess] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const liveDownloads = useLiveDownloads('nexa-player');
+  const nexaReviewStats = useAppReviewsStats('nexa-player');
   const { config: versionConfig } = useVersionConfig();
 
   const handleDownload = () => {
@@ -170,12 +171,21 @@ export function NexaPlayerSection({ navigateTo }: NexaPlayerSectionProps) {
 
               {/* Stat Badges Grid */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-                <div className="p-3 rounded-2xl bg-[#0a1e2b] border border-cyan-500/30 text-center">
-                  <div className="text-amber-400 font-black text-base flex items-center justify-center space-x-1">
+                <div 
+                  onClick={() => {
+                    const el = document.getElementById('reviews-section');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="p-3 rounded-2xl bg-[#0a1e2b] border border-cyan-500/30 text-center cursor-pointer hover:border-amber-400/60 hover:bg-[#0c2433] transition-all group/rate shadow-sm"
+                  title="Click to view & post verified Nexa Player reviews"
+                >
+                  <div className="text-amber-400 font-black text-base flex items-center justify-center space-x-1 group-hover/rate:scale-105 transition-transform">
                     <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                    <span>4.8</span>
+                    <span>{nexaReviewStats.totalReviews > 0 ? nexaReviewStats.rating.toFixed(1) : '0.0'}</span>
                   </div>
-                  <div className="text-[11px] text-slate-400 mt-0.5">Rating (850+)</div>
+                  <div className="text-[11px] text-slate-400 mt-0.5 group-hover/rate:text-amber-300">
+                    {nexaReviewStats.totalReviews > 0 ? `${nexaReviewStats.totalReviews} Reviews` : '0 Reviews'}
+                  </div>
                 </div>
 
                 <div className="p-3 rounded-2xl bg-[#0a1e2b] border border-cyan-500/30 text-center relative group">

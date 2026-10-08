@@ -132,7 +132,7 @@ export function AppsHubSection({
       status: 'Live',
       version: nexaConfig.version_name,
       size: nexaConfig.download_size,
-      rating: 4.8,
+      rating: nexaReviewStats.totalReviews > 0 ? nexaReviewStats.rating : 0.0,
       downloadsCount: nexaDownloads > 0 ? nexaDownloads.toString() : '0',
       updatedDate: 'September 2026',
       icon: '/nexa-player.jpg',
@@ -308,10 +308,10 @@ export function AppsHubSection({
                         >
                           <div className="text-amber-400 text-base sm:text-lg font-black flex items-center justify-center space-x-1 group-hover/rating:scale-105 transition-transform">
                             <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                            <span>{stats.rating}</span>
+                            <span>{stats.totalReviews > 0 ? stats.rating.toFixed(1) : '0.0'}</span>
                           </div>
                           <div className="text-[10px] sm:text-[11px] text-amber-300 font-bold mt-0.5 group-hover/rating:underline">
-                            {stats.totalReviews} Reviews
+                            {stats.totalReviews > 0 ? `${stats.totalReviews} Reviews` : '0 Reviews'}
                           </div>
                         </div>
                       );
