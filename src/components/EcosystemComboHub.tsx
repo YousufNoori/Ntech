@@ -17,7 +17,6 @@ import {
   TrendingUp,
   Award
 } from 'lucide-react';
-import { AdsterraBanner728x90 } from './AdsterraBanner728x90';
 
 interface EcosystemComboHubProps {
   onOpenRaqamFlow: () => void;
@@ -142,13 +141,6 @@ export function EcosystemComboHub({
             </div>
           </div>
         </div>
-      </div>
-
-      {/* ========================================================
-          Sponsored Ad Placement Directly Above Engineering Excellence
-      ======================================================== */}
-      <div className="w-full pt-2 pb-1">
-        <AdsterraBanner728x90 />
       </div>
 
       {/* ========================================================

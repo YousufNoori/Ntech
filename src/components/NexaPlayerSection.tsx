@@ -7,7 +7,6 @@ import {
 } from 'lucide-react';
 import { NexaPlayerShowcase3D } from './NexaPlayerShowcase3D';
 import { trackApkDownload, LiveStatsBanner, useLiveDownloads } from './LiveStatsBanner';
-import { AdsterraNativeAd } from './AdsterraNativeAd';
 import { ReviewsSection } from './ReviewsSection';
 import { useLiveApkSize } from '../lib/useLiveApkSize';
 
@@ -600,11 +599,6 @@ export function NexaPlayerSection({ navigateTo }: NexaPlayerSectionProps) {
       ======================================================== */}
       <div id="reviews-section" className="pt-6 relative z-10 scroll-mt-24">
         <ReviewsSection appId="nexa-player" appName="Nexa Player Pro" themeColor="cyan" />
-      </div>
-
-      {/* Sponsored Native Banner Ad */}
-      <div className="max-w-7xl mx-auto pt-6 relative z-10">
-        <AdsterraNativeAd />
       </div>
 
       {/* ========================================================

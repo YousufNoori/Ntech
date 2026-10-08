@@ -7,9 +7,6 @@ import { AppsHubSection } from './components/AppsHubSection';
 import { NexaPlayerSection } from './components/NexaPlayerSection';
 import { UniversalLegalSection } from './components/UniversalLegalSection';
 import { SiteMapSection, BlogsSection, HelpCenterSection } from './components/CommunityContentSection';
-import { AdsterraNativeAd } from './components/AdsterraNativeAd';
-import { AdsterraBanner300x250 } from './components/AdsterraBanner300x250';
-import { AdsterraBanner728x90 } from './components/AdsterraBanner728x90';
 import { ReviewsSection } from './components/ReviewsSection';
 import { db } from './lib/firebase';
 import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, Timestamp } from 'firebase/firestore';
@@ -262,11 +259,6 @@ export default function App() {
           />
         </Routes>
       </main>
-
-      {/* Global 728x90 Persistent Leaderboard Footer Ad */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 relative z-10">
-        <AdsterraBanner728x90 />
-      </div>
 
       {/* Footer - Glassmorphic Permanent Dark */}
       <footer className="relative z-10 bg-slate-950/90 backdrop-blur-lg border-t border-white/10 pt-12 pb-8">
@@ -751,11 +743,6 @@ function HomeSection({ navigateTo }: { navigateTo: (p: Page) => void }) {
         </div>
       </div>
 
-      {/* Sponsored Native Banner Ad */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 relative z-10">
-        <AdsterraNativeAd />
-      </div>
-
       {/* Community Reviews & Feedback for Raqam Flow */}
       <div id="reviews-section" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-4 relative z-10 scroll-mt-24">
         <ReviewsSection appId="raqam-flow" appName="Raqam Flow" themeColor="emerald" />
@@ -979,14 +966,6 @@ function FaqSection({ navigateTo }: { navigateTo?: (p: Page) => void }) {
           })}
         </div>
       )}
-
-      {/* Sponsored Ads */}
-      <div className="py-6 space-y-6">
-        <AdsterraNativeAd />
-        <div className="flex justify-center">
-          <AdsterraBanner300x250 />
-        </div>
-      </div>
 
       {/* Support Desk Redirect */}
       {navigateTo && (
@@ -1415,18 +1394,8 @@ function AboutSection() {
         </div>
       </div>
 
-      {/* Sponsored Square Ad Banner */}
-      <div className="py-6 flex justify-center">
-        <AdsterraBanner300x250 />
-      </div>
-
       {/* Interactive Suggestion Form */}
       <SuggestionForm />
-
-      {/* Sponsored Native Banner Ad */}
-      <div className="pt-6">
-        <AdsterraNativeAd />
-      </div>
     </ContentWrapper>
   );
 }
@@ -1933,11 +1902,6 @@ function ContactSection({ navigateTo }: { navigateTo: (p: Page) => void }) {
               </button>
             </form>
           )}
-        </div>
-
-        {/* Sponsored Native Banner Ad */}
-        <div className="pt-6">
-          <AdsterraNativeAd />
         </div>
       </div>
     </ContentWrapper>

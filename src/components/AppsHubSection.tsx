@@ -38,7 +38,6 @@ import {
 } from 'lucide-react';
 import { trackApkDownload, useLiveDownloads } from './LiveStatsBanner';
 import { useAppReviewsStats } from './ReviewsSection';
-import { AdsterraNativeAd } from './AdsterraNativeAd';
 import { EcosystemComboHub } from './EcosystemComboHub';
 import { useLiveApkSize } from '../lib/useLiveApkSize';
 
@@ -346,16 +345,7 @@ export function AppsHubSection({
       </div>
 
       {/* ========================================================
-          3. Sponsored Ads - Full Width
-      ======================================================== */}
-      {!searchQuery && (
-        <div className="w-full mb-10">
-          <AdsterraNativeAd />
-        </div>
-      )}
-
-      {/* ========================================================
-          4. Ecosystem Combo Hub: Pillars, Comparison & Roadmap
+          3. Ecosystem Combo Hub: Pillars, Comparison & Roadmap
       ======================================================== */}
       {!searchQuery && (
         <div className="w-full mb-8">

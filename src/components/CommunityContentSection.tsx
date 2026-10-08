@@ -28,7 +28,6 @@ import {
   ChevronLeft
 } from 'lucide-react';
 import { Page } from '../App';
-import { AdsterraNativeAd } from './AdsterraNativeAd';
 import { BLOG_ARTICLES, BlogArticle } from '../data/blogArticles';
 
 interface ComponentProps {
@@ -221,11 +220,6 @@ export function SiteMapSection({ navigateTo }: ComponentProps) {
             </div>
           </div>
         ))}
-      </div>
-
-      {/* Sponsored Native Banner Ad */}
-      <div className="pt-6">
-        <AdsterraNativeAd />
       </div>
     </div>
   );
@@ -524,11 +518,6 @@ export function BlogsSection({ navigateTo }: ComponentProps) {
           </div>
         ))}
       </div>
-
-      {/* Sponsored Native Banner Ad */}
-      <div className="pt-6">
-        <AdsterraNativeAd />
-      </div>
     </div>
   );
 }
@@ -758,11 +747,6 @@ export function HelpCenterSection({ navigateTo }: ComponentProps) {
         >
           Contact Help Desk
         </button>
-      </div>
-
-      {/* Sponsored Native Banner Ad */}
-      <div className="pt-6">
-        <AdsterraNativeAd />
       </div>
     </div>
   );

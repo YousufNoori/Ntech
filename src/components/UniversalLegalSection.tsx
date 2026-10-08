@@ -19,7 +19,6 @@ import {
   ShieldAlert,
   ExternalLink
 } from 'lucide-react';
-import { AdsterraNativeAd } from './AdsterraNativeAd';
 
 interface UniversalLegalProps {
   type: 'privacy' | 'terms' | 'cookie-policy';
@@ -170,11 +169,6 @@ function PrivacyPolicyView({ onNavigateHome }: { onNavigateHome: () => void }) {
               💬 WhatsApp: +92 302 2827364
             </a>
           </div>
-        </div>
-
-        {/* Sponsored Native Banner Ad */}
-        <div className="pt-4">
-          <AdsterraNativeAd />
         </div>
       </div>
     </div>
@@ -329,11 +323,6 @@ function TermsView({ onNavigateHome }: { onNavigateHome: () => void }) {
             </a>
           </div>
         </div>
-
-        {/* Sponsored Native Banner Ad */}
-        <div className="pt-4">
-          <AdsterraNativeAd />
-        </div>
       </div>
     </div>
   );
@@ -453,11 +442,6 @@ function CookiePolicyView({ onNavigateHome }: { onNavigateHome: () => void }) {
               💬 WhatsApp: +92 302 2827364
             </a>
           </div>
-        </div>
-
-        {/* Sponsored Native Banner Ad */}
-        <div className="pt-4">
-          <AdsterraNativeAd />
         </div>
       </div>
     </div>
