@@ -75,6 +75,18 @@ export default function App() {
       case 'faq':
         document.title = 'FAQ - NooriTech';
         break;
+      case 'cookie-policy':
+        document.title = 'Cookie Policy - NooriTech';
+        break;
+      case 'sitemap':
+        document.title = 'Site Map - NooriTech';
+        break;
+      case 'blogs':
+        document.title = 'Blogs - NooriTech';
+        break;
+      case 'help-center':
+        document.title = 'Help Center - NooriTech';
+        break;
       case 'privacy':
       case 'universal-privacy':
         document.title = 'Privacy Policy - NooriTech';
