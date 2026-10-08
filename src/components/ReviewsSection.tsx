@@ -1,0 +1,350 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { MessageSquare, MessageCircle, Star, Send, Loader2, Check, Sparkles, UserCheck, ShieldCheck, ChevronLeft, ChevronRight } from 'lucide-react';
+import { db } from '../lib/firebase';
+import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, Timestamp } from 'firebase/firestore';
+
+export type Review = { id: string; name: string; comment: string; rating: number; date: string };
+
+const neonThemes = [
+  {
+    border: 'border-emerald-500/80 dark:border-emerald-400/90',
+    glow: 'shadow-[0_0_20px_rgba(16,185,129,0.35)]',
+    bg: 'bg-gradient-to-b from-[#081f18] via-[#061813] to-[#04120e]',
+    badge: 'text-emerald-400 bg-emerald-500/15 border-emerald-500/30',
+    title: 'text-emerald-300'
+  },
+  {
+    border: 'border-cyan-500/80 dark:border-cyan-400/90',
+    glow: 'shadow-[0_0_20px_rgba(6,182,212,0.35)]',
+    bg: 'bg-gradient-to-b from-[#081a24] via-[#06141d] to-[#040e15]',
+    badge: 'text-cyan-400 bg-cyan-500/15 border-cyan-500/30',
+    title: 'text-cyan-300'
+  },
+  {
+    border: 'border-amber-500/80 dark:border-amber-400/90',
+    glow: 'shadow-[0_0_20px_rgba(245,158,11,0.35)]',
+    bg: 'bg-gradient-to-b from-[#221708] via-[#1a1206] to-[#120d04]',
+    badge: 'text-amber-400 bg-amber-500/15 border-amber-500/30',
+    title: 'text-amber-300'
+  },
+  {
+    border: 'border-purple-500/80 dark:border-purple-400/90',
+    glow: 'shadow-[0_0_20px_rgba(168,85,247,0.35)]',
+    bg: 'bg-gradient-to-b from-[#1b0a2a] via-[#140720] to-[#0d0415]',
+    badge: 'text-purple-400 bg-purple-500/15 border-purple-500/30',
+    title: 'text-purple-300'
+  },
+  {
+    border: 'border-rose-500/80 dark:border-rose-400/90',
+    glow: 'shadow-[0_0_20px_rgba(244,63,94,0.35)]',
+    bg: 'bg-gradient-to-b from-[#250913] via-[#1c060e] to-[#120409]',
+    badge: 'text-rose-400 bg-rose-500/15 border-rose-500/30',
+    title: 'text-rose-300'
+  }
+];
+
+export function ReviewsSection() {
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [name, setName] = useState('');
+  const [comment, setComment] = useState('');
+  const [rating, setRating] = useState(5);
+  const [successMsg, setSuccessMsg] = useState(false);
+
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const handleScrollLeft = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: -320, behavior: 'smooth' });
+    }
+  };
+
+  const handleScrollRight = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: 320, behavior: 'smooth' });
+    }
+  };
+
+  useEffect(() => {
+    try {
+      const q = query(collection(db, 'comments'), orderBy('createdAt', 'desc'));
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        const list: Review[] = [];
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          let dateStr = 'Just now';
+          if (data.createdAt) {
+            if (data.createdAt instanceof Timestamp) {
+              dateStr = data.createdAt.toDate().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+            } else if (typeof data.createdAt === 'string') {
+              dateStr = new Date(data.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+            }
+          }
+          list.push({
+            id: doc.id,
+            name: data.name || 'Anonymous User',
+            comment: data.comment || '',
+            rating: Number(data.rating) || 5,
+            date: dateStr,
+          });
+        });
+        setReviews(list);
+        setLoading(false);
+      }, (error) => {
+        console.warn('Firestore live listen error, falling back:', error);
+        setLoading(false);
+      });
+
+      return () => unsubscribe();
+    } catch (err) {
+      console.warn('Firestore initialization fallback:', err);
+      setLoading(false);
+    }
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim() || !comment.trim() || submitting) return;
+    
+    setSubmitting(true);
+    try {
+      await addDoc(collection(db, 'comments'), {
+        name: name.trim(),
+        comment: comment.trim(),
+        rating: Number(rating),
+        createdAt: serverTimestamp(),
+      });
+      setName('');
+      setComment('');
+      setRating(5);
+      setSuccessMsg(true);
+      setTimeout(() => setSuccessMsg(false), 4000);
+    } catch (error) {
+      console.error('Error adding comment to Firebase Firestore:', error);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="space-y-8 w-full">
+      {/* ========================================================
+          SECTION 1: Community Reviews Glowing Cards Carousel / Grid
+      ======================================================== */}
+      <div className="bg-[#08131a] border border-slate-800/90 rounded-[28px] p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+        {/* Header Title */}
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div className="flex items-center space-x-3">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex items-center justify-center shadow-lg">
+              <MessageSquare className="w-6 h-6" />
+            </div>
+            <div>
+              <div className="flex items-center space-x-2">
+                <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">Community Reviews</h2>
+                <span className="font-urdu text-sm text-emerald-400 font-semibold">(صارفین کی رائے)</span>
+              </div>
+              <p className="text-xs text-slate-400 mt-0.5">Live verified user feedback & star ratings from across Pakistan</p>
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>Live Cloud Sync</span>
+            </span>
+          </div>
+        </div>
+
+        {/* Reviews Horizontal Glowing Cards Scroll Row with Side Overlay Buttons */}
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-12 text-slate-400">
+            <Loader2 className="w-8 h-8 animate-spin text-emerald-500 mb-2" />
+            <span className="text-sm font-medium">Connecting to Firebase Cloud database...</span>
+          </div>
+        ) : reviews.length === 0 ? (
+          <div className="text-center py-12 px-6 bg-[#0c1c24] rounded-2xl border border-dashed border-slate-700">
+            <MessageCircle className="w-12 h-12 text-emerald-500/50 mx-auto mb-3" />
+            <p className="text-base font-bold text-white">Pehla Review Aap Likhein!</p>
+            <p className="text-xs text-slate-400 mt-1 font-urdu">آپ کا ریویو فورا نئون کارڈ میں نیچے ڈسپلے ہوگا اور کلاؤڈ میں سیو رہے گا۔</p>
+          </div>
+        ) : (
+          <div className="relative group/carousel">
+            {/* Left Slide Overlay Button (<) */}
+            <button
+              onClick={handleScrollLeft}
+              className="absolute -left-3 sm:-left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-slate-950/90 border-2 border-emerald-500/80 text-emerald-400 hover:bg-emerald-500 hover:text-slate-950 flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.4)] transition-all active:scale-90 cursor-pointer backdrop-blur-md"
+              title="Slide Left"
+            >
+              <ChevronLeft className="w-6 h-6 stroke-[3]" />
+            </button>
+
+            {/* Right Slide Overlay Button (>) */}
+            <button
+              onClick={handleScrollRight}
+              className="absolute -right-3 sm:-right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-slate-950/90 border-2 border-emerald-500/80 text-emerald-400 hover:bg-emerald-500 hover:text-slate-950 flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.4)] transition-all active:scale-90 cursor-pointer backdrop-blur-md"
+              title="Slide Right"
+            >
+              <ChevronRight className="w-6 h-6 stroke-[3]" />
+            </button>
+
+            {/* Scrollable Container */}
+            <div 
+              ref={scrollContainerRef}
+              className="flex overflow-x-auto justify-start items-stretch gap-4 py-3 snap-x [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden -mx-2 px-6 scroll-smooth"
+            >
+            {reviews.map((r, index) => {
+              const theme = neonThemes[index % neonThemes.length];
+              return (
+                <div
+                  key={r.id}
+                  className={`snap-start shrink-0 w-72 sm:w-80 h-[220px] sm:h-[230px] rounded-[24px] p-5 border-2 ${theme.border} ${theme.bg} ${theme.glow} flex flex-col justify-between transition-all duration-300 hover:scale-[1.02] relative overflow-hidden group`}
+                >
+                  {/* Subtle Top Glow Accent */}
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl pointer-events-none"></div>
+
+                  <div className="space-y-3 relative z-10">
+                    {/* Header Row: User Name & Rating */}
+                    <div className="flex items-start justify-between">
+                      <div className="min-w-0 flex-1 pr-2">
+                        <h4 className={`font-black text-base sm:text-lg truncate ${theme.title}`}>
+                          {r.name}
+                        </h4>
+                        <div className="flex items-center space-x-1 mt-1">
+                          {[...Array(5)].map((_, i) => (
+                            <Star
+                              key={i}
+                              className={`w-3.5 h-3.5 ${
+                                i < r.rating ? 'text-amber-400 fill-amber-400' : 'text-slate-700'
+                              }`}
+                            />
+                          ))}
+                          <span className="text-xs text-amber-400 font-bold ml-1">{r.rating}.0</span>
+                        </div>
+                      </div>
+
+                      <span className="text-[10px] text-slate-400 font-mono font-medium shrink-0 bg-white/5 px-2 py-0.5 rounded-full border border-white/10">
+                        {r.date}
+                      </span>
+                    </div>
+
+                    {/* Review Body Comment */}
+                    <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-normal min-h-[48px] line-clamp-3">
+                      "{r.comment}"
+                    </p>
+                  </div>
+
+                  {/* Card Bottom Urdu/English Verified Badge */}
+                  <div className="pt-3 border-t border-white/10 flex items-center justify-between text-[11px] mt-2">
+                    <span className="font-urdu font-semibold text-slate-300">تصدیق شدہ تبصرہ</span>
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${theme.badge} flex items-center space-x-1`}>
+                      <ShieldCheck className="w-3 h-3 inline-block" />
+                      <span>Verified Review</span>
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ========================================================
+          SECTION 2: Completely SEPARATE Feedback & Review Submit Form
+      ======================================================== */}
+      <form onSubmit={handleSubmit} className="bg-[#08131a] border border-slate-800/90 rounded-[28px] p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+        <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center">
+              <Sparkles className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-lg sm:text-xl font-extrabold text-white">Post Your Review & Feedback</h3>
+              <p className="text-xs text-slate-400 font-urdu">اپنا تجربہ اور کیموینٹی جائزہ شیئر کریں</p>
+            </div>
+          </div>
+
+          {/* Top Right Corner Action Button & Success Badge */}
+          <div className="flex items-center space-x-3">
+            {successMsg && (
+              <span className="px-3 py-1.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center space-x-1 animate-bounce">
+                <Check className="w-4 h-4 text-emerald-400" />
+                <span>فائر بیس میں سیو ہو گیا!</span>
+              </span>
+            )}
+
+            <button 
+              type="submit" 
+              disabled={submitting}
+              className="flex items-center justify-center space-x-2 bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-black px-5 py-2.5 rounded-full text-xs sm:text-sm transition-all shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 active:scale-95 disabled:opacity-50 cursor-pointer shrink-0"
+            >
+              {submitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Publishing...</span>
+                </>
+              ) : (
+                <>
+                  <span>Publish Community Review</span>
+                  <Send className="w-4 h-4 text-slate-950 stroke-[2.5]" />
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-bold text-slate-300 mb-1.5">
+                Your Name / Business Name (آپ کا نام)
+              </label>
+              <input 
+                type="text" 
+                placeholder="e.g. Muhammad Yousuf / Karachi Traders" 
+                value={name}
+                onChange={e => setName(e.target.value)}
+                className="w-full bg-[#10222a] border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors"
+                required
+                maxLength={60}
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-300 mb-1.5">
+                Select Rating (اسٹار سلیکشن)
+              </label>
+              <div className="flex items-center space-x-2 bg-[#10222a] border border-slate-800 rounded-xl px-4 py-2">
+                {[1, 2, 3, 4, 5].map(star => (
+                  <Star 
+                    key={star} 
+                    onClick={() => setRating(star)}
+                    className={`w-6 h-6 cursor-pointer transition-transform hover:scale-125 ${
+                      star <= rating ? 'text-amber-400 fill-amber-400' : 'text-slate-600'
+                    }`} 
+                  />
+                ))}
+                <span className="text-xs font-extrabold text-amber-400 ml-2">{rating}.0 Stars</span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-slate-300 mb-1.5">
+              Your Review & Feedback (ایپ کے بارے میں آپ کا تجربہ)
+            </label>
+            <textarea 
+              placeholder="Raqam Flow اور NooriTech ایپس کے بارے میں اپنی رائے اور تجربہ یہاں لکھیں..." 
+              value={comment}
+              onChange={e => setComment(e.target.value)}
+              className="w-full bg-[#10222a] border border-slate-800 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors resize-none h-24"
+              required
+              maxLength={500}
+            />
+          </div>
+        </div>
+      </form>
+    </div>
+  );
+}
