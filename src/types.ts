@@ -1,0 +1,15 @@
+export type Page = 
+  | 'apps' 
+  | 'raqam-flow' 
+  | 'nexa-player' 
+  | 'about' 
+  | 'privacy' 
+  | 'terms' 
+  | 'cookie-policy' 
+  | 'universal-privacy' 
+  | 'universal-terms' 
+  | 'contact' 
+  | 'faq' 
+  | 'sitemap' 
+  | 'blogs' 
+  | 'help-center';
