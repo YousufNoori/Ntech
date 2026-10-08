@@ -40,6 +40,7 @@ import { trackApkDownload, useLiveDownloads } from './LiveStatsBanner';
 import { useAppReviewsStats } from './ReviewsSection';
 import { EcosystemComboHub } from './EcosystemComboHub';
 import { useLiveApkSize } from '../lib/useLiveApkSize';
+import { useVersionConfig } from '../lib/useVersionConfig';
 
 const NEXA_APK_URL = 'https://www.dropbox.com/scl/fi/di72yn79zdpb7h3azdwml/NexaPlay-V1.1.0.apk?rlkey=60tbyy1ww3owmv3qw2hc91vcq&st=wdodpuac&dl=1';
 const RAQAM_APK_URL = 'https://www.dropbox.com/scl/fi/rtwneeiwbk9qnlu4j2y1y/Raqam-Flow-Ap-Ka-Apna-Digital-Khata.apk?rlkey=ro137r9km6qpm00h9og9rdw2k&st=5qsf9njc&dl=1';
@@ -90,7 +91,7 @@ export function AppsHubSection({
   const [contactMessage, setContactMessage] = useState('');
   const raqamDownloads = useLiveDownloads('raqam-flow');
   const nexaDownloads = useLiveDownloads('nexa-player');
-  const { sizeStr: nexaLiveSize } = useLiveApkSize(NEXA_APK_URL, 28118800);
+  const { config: nexaConfig } = useVersionConfig();
   const { sizeStr: raqamLiveSize } = useLiveApkSize(RAQAM_APK_URL, 35465412);
   const raqamReviewStats = useAppReviewsStats('raqam-flow');
   const nexaReviewStats = useAppReviewsStats('nexa-player');
@@ -129,8 +130,8 @@ export function AppsHubSection({
       description: 'Advanced 4K Ultra HD media player designed for smooth playback, gesture volume controls, audio equalizer, background music playback, and subtitle customization.',
       category: 'Entertainment Utilities',
       status: 'Live',
-      version: '1.1.0',
-      size: nexaLiveSize,
+      version: nexaConfig.version_name,
+      size: nexaConfig.download_size,
       rating: 4.8,
       downloadsCount: nexaDownloads > 0 ? nexaDownloads.toString() : '0',
       updatedDate: 'September 2026',

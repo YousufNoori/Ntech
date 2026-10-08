@@ -8,7 +8,7 @@ import {
 import { NexaPlayerShowcase3D } from './NexaPlayerShowcase3D';
 import { trackApkDownload, LiveStatsBanner, useLiveDownloads } from './LiveStatsBanner';
 import { ReviewsSection } from './ReviewsSection';
-import { useLiveApkSize } from '../lib/useLiveApkSize';
+import { useVersionConfig } from '../lib/useVersionConfig';
 
 const NEXA_APK_URL = 'https://www.dropbox.com/scl/fi/di72yn79zdpb7h3azdwml/NexaPlay-V1.1.0.apk?rlkey=60tbyy1ww3owmv3qw2hc91vcq&st=wdodpuac&dl=1';
 
@@ -21,7 +21,7 @@ export function NexaPlayerSection({ navigateTo }: NexaPlayerSectionProps) {
   const [downloadSuccess, setDownloadSuccess] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const liveDownloads = useLiveDownloads('nexa-player');
-  const { sizeStr: liveApkSize, isLive } = useLiveApkSize(NEXA_APK_URL, 28118800);
+  const { config: versionConfig } = useVersionConfig();
 
   const handleDownload = () => {
     setDownloading(true);
@@ -180,7 +180,7 @@ export function NexaPlayerSection({ navigateTo }: NexaPlayerSectionProps) {
 
                 <div className="p-3 rounded-2xl bg-[#0a1e2b] border border-cyan-500/30 text-center relative group">
                   <div className="text-cyan-300 font-black text-base font-mono flex items-center justify-center gap-1">
-                    <span>{liveApkSize}</span>
+                    <span>{versionConfig.download_size}</span>
                   </div>
                   <div className="text-[11px] text-slate-400 mt-0.5 flex items-center justify-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
@@ -189,7 +189,7 @@ export function NexaPlayerSection({ navigateTo }: NexaPlayerSectionProps) {
                 </div>
 
                 <div className="p-3 rounded-2xl bg-[#0a1e2b] border border-cyan-500/30 text-center">
-                  <div className="text-emerald-400 font-black text-base">v1.1.0</div>
+                  <div className="text-emerald-400 font-black text-base">v{versionConfig.version_name}</div>
                   <div className="text-[11px] text-slate-400 mt-0.5">Pro Edition</div>
                 </div>
 
@@ -207,7 +207,7 @@ export function NexaPlayerSection({ navigateTo }: NexaPlayerSectionProps) {
                   className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-cyan-400 via-teal-400 to-emerald-400 text-slate-950 font-black text-base flex items-center justify-center space-x-3 shadow-xl shadow-cyan-500/30 hover:scale-105 active:scale-95 transition-all cursor-pointer"
                 >
                   <Download className="w-5 h-5 stroke-[2.5]" />
-                  <span>{downloading ? 'Preparing Download...' : 'Download Nexa Player APK (28.6 MB)'}</span>
+                  <span>{downloading ? 'Preparing Download...' : `Download Nexa Player APK (${versionConfig.download_size})`}</span>
                 </button>
 
                 {downloadSuccess && (
@@ -216,6 +216,34 @@ export function NexaPlayerSection({ navigateTo }: NexaPlayerSectionProps) {
                     <span>Download Started Successfully!</span>
                   </span>
                 )}
+              </div>
+
+              {/* Real Version & Size Sync Info (Synced from version.json) */}
+              <div className="p-3 sm:p-3.5 rounded-2xl bg-gradient-to-r from-cyan-950/60 via-slate-900/80 to-teal-950/40 border border-cyan-500/30 text-left">
+                <div className="flex items-center justify-between gap-2 mb-2 flex-wrap">
+                  <div className="flex items-center space-x-2">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span className="text-xs font-black text-white">Live Version Sync:</span>
+                    <span className="text-xs font-bold text-cyan-300 font-mono">v{versionConfig.version_name} ({versionConfig.download_size})</span>
+                  </div>
+                  <a
+                    href="/version.json"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[10px] font-bold text-cyan-400 hover:text-cyan-300 flex items-center space-x-1 px-2 py-0.5 rounded-md bg-cyan-500/10 border border-cyan-500/20"
+                  >
+                    <span>Netlify version.json</span>
+                    <ExternalLink className="w-2.5 h-2.5" />
+                  </a>
+                </div>
+                <div className="flex flex-wrap gap-2 text-[11px] text-slate-300">
+                  {versionConfig.highlights.map((h, idx) => (
+                    <span key={idx} className="inline-flex items-center space-x-1 bg-slate-950/50 px-2.5 py-1 rounded-lg border border-cyan-500/20 text-slate-300">
+                      <Check className="w-3 h-3 text-emerald-400 shrink-0" />
+                      <span>{h}</span>
+                    </span>
+                  ))}
+                </div>
               </div>
 
             </div>
@@ -349,10 +377,10 @@ export function NexaPlayerSection({ navigateTo }: NexaPlayerSectionProps) {
                         </div>
                         <div className="overflow-hidden">
                           <div className="font-extrabold text-white text-[11px] truncate tracking-wide">
-                            Nexa Player Pro v1.1.0 8K Video...
+                            Nexa Player Pro v{versionConfig.version_name} 8K Video...
                           </div>
                           <div className="text-[10px] text-cyan-400 font-mono font-medium">
-                            {liveApkSize || '28.4 MB'} • Just now
+                            {versionConfig.download_size} • Just now
                           </div>
                         </div>
                       </div>
@@ -531,7 +559,7 @@ export function NexaPlayerSection({ navigateTo }: NexaPlayerSectionProps) {
 
           <div className="p-3.5 rounded-2xl bg-slate-950/80 border border-slate-800">
             <span className="text-slate-400 block text-[10px] uppercase font-sans">APK File Size</span>
-            <span className="text-white font-bold">{liveApkSize}</span>
+            <span className="text-white font-bold">{versionConfig.download_size}</span>
           </div>
 
           <div className="p-3.5 rounded-2xl bg-slate-950/80 border border-slate-800">
