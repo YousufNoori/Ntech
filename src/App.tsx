@@ -1,16 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { Download, ShieldCheck, Cloud, Globe, BookOpen, Smartphone, ChevronRight, Menu, X, CheckCircle, FileText, Info, Sun, Moon, Star, MessageSquare, HelpCircle, Send, Banknote, MessageCircle, Sparkles, Check, Loader2, Mail, Phone, Lock, Scale, Copyright, Database, EyeOff, HardDrive, Bell, Camera, ExternalLink, BadgeCheck, Folder, Layers, ArrowLeft, UserCheck } from 'lucide-react';
-import { ThreeBackground } from './components/ThreeBackground';
 import { LiveStatsBanner, trackApkDownload, useLiveDownloads } from './components/LiveStatsBanner';
-import { PhoneShowcase3D } from './components/PhoneShowcase3D';
 import { AppsHubSection } from './components/AppsHubSection';
-import { NexaPlayerSection } from './components/NexaPlayerSection';
-import { UniversalLegalSection } from './components/UniversalLegalSection';
-import { SiteMapSection, BlogsSection, HelpCenterSection } from './components/CommunityContentSection';
 import { ReviewsSection } from './components/ReviewsSection';
 import { db } from './lib/firebase';
-import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, Timestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+
+// Code-split heavy components for fast initial page load
+const PhoneShowcase3D = lazy(() => import('./components/PhoneShowcase3D').then(m => ({ default: m.PhoneShowcase3D })));
+const ThreeBackground = lazy(() => import('./components/ThreeBackground').then(m => ({ default: m.ThreeBackground })));
+const NexaPlayerSection = lazy(() => import('./components/NexaPlayerSection').then(m => ({ default: m.NexaPlayerSection })));
+const UniversalLegalSection = lazy(() => import('./components/UniversalLegalSection').then(m => ({ default: m.UniversalLegalSection })));
+const SiteMapSection = lazy(() => import('./components/CommunityContentSection').then(m => ({ default: m.SiteMapSection })));
+const BlogsSection = lazy(() => import('./components/CommunityContentSection').then(m => ({ default: m.BlogsSection })));
+const HelpCenterSection = lazy(() => import('./components/CommunityContentSection').then(m => ({ default: m.HelpCenterSection })));
 
 export type Page = 'apps' | 'raqam-flow' | 'nexa-player' | 'about' | 'privacy' | 'terms' | 'cookie-policy' | 'universal-privacy' | 'universal-terms' | 'contact' | 'faq' | 'sitemap' | 'blogs' | 'help-center';
 
@@ -77,7 +81,9 @@ export default function App() {
 
   return (
     <div className="min-h-screen relative selection:bg-emerald-500/30 selection:text-emerald-100 font-sans overflow-x-hidden text-slate-100 bg-[#050b14]">
-      <ThreeBackground isDark={true} />
+      <Suspense fallback={null}>
+        <ThreeBackground isDark={true} />
+      </Suspense>
       
       {/* Navbar - Glassmorphic Permanent Dark */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-950/85 backdrop-blur-xl border-b border-white/10 shadow-lg">
@@ -183,7 +189,13 @@ export default function App() {
 
       {/* Main Content Area */}
       <main className="relative z-10 pt-20 sm:pt-24 pb-16 min-h-screen">
-        <Routes>
+        <Suspense fallback={
+          <div className="min-h-[50vh] flex flex-col items-center justify-center space-y-3">
+            <div className="w-9 h-9 border-3 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+            <p className="text-xs text-slate-400 font-medium">Loading view...</p>
+          </div>
+        }>
+          <Routes>
           {/* Main Apps Hub Portal */}
           <Route 
             path="/" 
@@ -258,6 +270,7 @@ export default function App() {
             element={<UniversalLegalSection type="cookie-policy" onNavigateHome={() => navigateTo('apps')} />} 
           />
         </Routes>
+        </Suspense>
       </main>
 
       {/* Footer - Glassmorphic Permanent Dark */}
@@ -434,8 +447,14 @@ function HomeSection({ navigateTo }: { navigateTo: (p: Page) => void }) {
         </div>
         
         {/* 3D Animated Mobile Showcase Slider */}
-        <div className="lg:w-1/2 flex justify-center w-full">
-          <PhoneShowcase3D />
+        <div className="lg:w-1/2 flex justify-center w-full min-h-[420px]">
+          <Suspense fallback={
+            <div className="w-full h-96 flex items-center justify-center">
+              <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          }>
+            <PhoneShowcase3D />
+          </Suspense>
         </div>
       </div>
 

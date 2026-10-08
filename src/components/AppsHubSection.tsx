@@ -59,7 +59,7 @@ export interface AppItem {
   urduName?: string;
   tagline: string;
   description: string;
-  category: 'Finance & Accounting' | 'Point of Sale' | 'Inventory' | 'Business Utilities' | 'All';
+  category: 'Finance & Accounting' | 'Point of Sale' | 'Inventory' | 'Entertainment Utilities' | 'Business Utilities' | 'All';
   status: 'Live' | 'Coming Soon' | 'In Development';
   version: string;
   size: string;
@@ -127,7 +127,7 @@ export function AppsHubSection({
       urduName: 'نیکسا پلیئر - ایچ ڈی ویڈیو اینڈ میڈیا پلیئر',
       tagline: 'Ultra HD Video & Music Player with Equalizer & Subtitles',
       description: 'Advanced 4K Ultra HD media player designed for smooth playback, gesture volume controls, audio equalizer, background music playback, and subtitle customization.',
-      category: 'Business Utilities',
+      category: 'Entertainment Utilities',
       status: 'Live',
       version: '1.1.0',
       size: nexaLiveSize,
@@ -148,7 +148,7 @@ export function AppsHubSection({
     }
   ];
 
-  const categories = ['All', 'Finance & Accounting', 'Business Utilities'];
+  const categories = ['All', 'Finance & Accounting', 'Entertainment Utilities'];
 
   const filteredApps = apps.filter((app) => {
     const matchesCategory = selectedCategory === 'All' || app.category === selectedCategory;
