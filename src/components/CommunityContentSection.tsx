@@ -46,10 +46,10 @@ export function SiteMapSection({ navigateTo }: ComponentProps) {
       icon: <Layers className="w-5 h-5 text-emerald-500" />,
       items: [
         { 
-          label: "NooriTech Apps Hub Store", 
+          label: "Noori Tech Official Store", 
           path: "apps" as Page, 
           badge: "Main Store",
-          badgeColor: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+          badgeColor: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
           desc: "Explore all official Android mobile applications created by Muhammad Yousuf Noori with direct APK mirrors & ratings." 
         },
         { 

@@ -10,6 +10,7 @@ import { SiteMapSection, BlogsSection, HelpCenterSection } from './components/Co
 import { AdsterraNativeAd } from './components/AdsterraNativeAd';
 import { AdsterraBanner300x250 } from './components/AdsterraBanner300x250';
 import { AdsterraBanner728x90 } from './components/AdsterraBanner728x90';
+import { ReviewsSection } from './components/ReviewsSection';
 import { db } from './lib/firebase';
 import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, Timestamp } from 'firebase/firestore';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
@@ -135,17 +136,15 @@ export default function App() {
               className="flex items-center space-x-2.5 sm:space-x-3 cursor-pointer group"
               onClick={() => navigateTo('apps')}
             >
-              <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 p-0.5 shadow-[0_0_15px_rgba(16,185,129,0.4)] group-hover:shadow-[0_0_25px_rgba(16,185,129,0.7)] transition-shadow flex-shrink-0 flex items-center justify-center">
-                <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center text-emerald-400">
-                  <Layers className="w-5 h-5" />
-                </div>
+              <div className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-2xl overflow-hidden border border-amber-400/40 p-0.5 shadow-[0_0_20px_rgba(251,191,36,0.35)] group-hover:shadow-[0_0_30px_rgba(251,191,36,0.7)] transition-all flex-shrink-0 flex items-center justify-center bg-slate-950">
+                <img src="/noori-tech-logo.jpg" alt="Noori Tech Logo" className="w-full h-full object-cover rounded-[14px] group-hover:scale-110 transition-transform duration-300" />
               </div>
               <div className="flex flex-col items-start">
-                <span className="text-lg sm:text-xl font-black tracking-tight bg-gradient-to-r from-emerald-300 via-teal-200 to-cyan-200 bg-clip-text text-transparent leading-none">
-                  NooriTech Apps
+                <span className="text-xl sm:text-2xl font-black tracking-tight bg-gradient-to-r from-emerald-300 via-teal-200 to-cyan-200 bg-clip-text text-transparent leading-none">
+                  Noori Tech
                 </span>
                 <span className="text-[10px] sm:text-[11px] text-slate-400 font-semibold tracking-wide mt-0.5">
-                  Muhammad Yousuf Noori Suite
+                  Illuminating Innovation
                 </span>
               </div>
             </div>
@@ -197,6 +196,8 @@ export default function App() {
                 onOpenNexaPlayer={() => navigateTo('nexa-player')}
                 onNavigateToUniversalPrivacy={() => navigateTo('universal-privacy')} 
                 onNavigateToUniversalTerms={() => navigateTo('universal-terms')} 
+                onNavigateToContact={() => navigateTo('contact')}
+                onNavigateToAbout={() => navigateTo('about')}
               />
             } 
           />
@@ -208,6 +209,8 @@ export default function App() {
                 onOpenNexaPlayer={() => navigateTo('nexa-player')}
                 onNavigateToUniversalPrivacy={() => navigateTo('universal-privacy')} 
                 onNavigateToUniversalTerms={() => navigateTo('universal-terms')} 
+                onNavigateToContact={() => navigateTo('contact')}
+                onNavigateToAbout={() => navigateTo('about')}
               />
             } 
           />
@@ -272,18 +275,16 @@ export default function App() {
             {/* Developer Portfolio Info */}
             <div>
               <div className="flex items-center space-x-3 mb-4 cursor-pointer" onClick={() => navigateTo('apps')}>
-                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 p-0.5 flex items-center justify-center">
-                  <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center text-emerald-400 font-black text-sm">
-                    YN
-                  </div>
+                <div className="w-12 h-12 rounded-2xl overflow-hidden border border-amber-400/40 p-0.5 shadow-md flex items-center justify-center bg-slate-950 flex-shrink-0">
+                  <img src="/noori-tech-logo.jpg" alt="Noori Tech Logo" className="w-full h-full object-cover rounded-[14px]" />
                 </div>
                 <div>
-                  <span className="text-lg font-black text-slate-900 dark:text-white block leading-tight">NooriTech</span>
-                  <span className="text-xs text-slate-500 block">Muhammad Yousuf Noori</span>
-                  <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold block mt-0.5">Software Engineer & Android Developer</span>
+                  <span className="text-lg font-black text-white block leading-tight">Noori Tech</span>
+                  <span className="text-xs text-slate-400 block">Muhammad Yousuf Noori</span>
+                  <span className="text-[11px] text-emerald-400 font-semibold block mt-0.5">Illuminating Innovation</span>
                 </div>
               </div>
-              <p className="text-slate-600 dark:text-slate-400 text-xs leading-relaxed">
+              <p className="text-slate-400 text-xs leading-relaxed">
                 Developing offline-first, privacy-respecting financial and productivity Android applications for businesses across Pakistan and worldwide.
               </p>
             </div>
@@ -403,9 +404,9 @@ function HomeSection({ navigateTo }: { navigateTo: (p: Page) => void }) {
         <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-xs font-semibold text-slate-600 dark:text-slate-300">
           <button 
             onClick={() => navigateTo('apps')}
-            className="text-emerald-600 dark:text-emerald-400 font-bold hover:underline flex items-center space-x-1 cursor-pointer"
+            className="text-emerald-400 font-bold hover:underline flex items-center space-x-1 cursor-pointer"
           >
-            <span>📱 NooriTech Apps Suite</span>
+            <span>📱 Noori Tech</span>
           </button>
           <span>/</span>
           <span className="text-slate-900 dark:text-white font-bold">Raqam Flow (Flagship)</span>
@@ -753,6 +754,11 @@ function HomeSection({ navigateTo }: { navigateTo: (p: Page) => void }) {
       {/* Sponsored Native Banner Ad */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 relative z-10">
         <AdsterraNativeAd />
+      </div>
+
+      {/* Community Reviews & Feedback for Raqam Flow */}
+      <div id="reviews-section" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-4 relative z-10 scroll-mt-24">
+        <ReviewsSection appId="raqam-flow" appName="Raqam Flow" themeColor="emerald" />
       </div>
 
       {/* FAQ Section */}
@@ -1273,19 +1279,22 @@ function AboutSection() {
                 <span>Next-Gen Mobile Ecosystem</span>
               </span>
               <h2 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
-                Empowering Users with <span className="text-emerald-400">NooriTech</span> Apps
+                Empowering Users with <span className="text-emerald-400">Noori Tech</span> Apps
               </h2>
               <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
-                NooriTech is a premier software engineering studio dedicated to building high-performance, secure, offline-first, and completely ad-free utility applications. We put user privacy and smooth user experience above everything else.
+                Noori Tech is a premier software engineering studio dedicated to building high-performance, secure, offline-first, and completely ad-free utility applications. We put user privacy and smooth user experience above everything else.
               </p>
             </div>
             
             {/* Logo Group */}
-            <div className="flex -space-x-4">
-              <div className="w-16 h-16 rounded-full border-4 border-cyan-400 bg-slate-950 p-0.5 shadow-lg shadow-cyan-500/30 flex items-center justify-center overflow-hidden">
+            <div className="flex -space-x-3 items-center">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl border-4 border-amber-400/80 bg-slate-950 p-0.5 shadow-xl shadow-amber-500/30 flex items-center justify-center overflow-hidden z-20">
+                <img src="/noori-tech-logo.jpg" alt="Noori Tech Logo" className="w-full h-full object-cover rounded-xl" />
+              </div>
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-4 border-cyan-400 bg-slate-950 p-0.5 shadow-lg shadow-cyan-500/30 flex items-center justify-center overflow-hidden z-10">
                 <img src="/nexa-player.jpg" alt="Nexa Player Logo" className="w-full h-full object-cover rounded-full" />
               </div>
-              <div className="w-16 h-16 rounded-2xl border-4 border-emerald-400 bg-slate-950 p-1.5 shadow-lg shadow-emerald-500/30 flex items-center justify-center overflow-hidden">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl border-4 border-emerald-400 bg-slate-950 p-1 shadow-lg shadow-emerald-500/30 flex items-center justify-center overflow-hidden">
                 <img src="/logo.png" alt="Raqam Flow Logo" className="w-full h-full object-cover rounded-xl" />
               </div>
             </div>

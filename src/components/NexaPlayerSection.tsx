@@ -8,6 +8,7 @@ import {
 import { NexaPlayerShowcase3D } from './NexaPlayerShowcase3D';
 import { trackApkDownload, LiveStatsBanner, useLiveDownloads } from './LiveStatsBanner';
 import { AdsterraNativeAd } from './AdsterraNativeAd';
+import { ReviewsSection } from './ReviewsSection';
 import { useLiveApkSize } from '../lib/useLiveApkSize';
 
 const NEXA_APK_URL = 'https://www.dropbox.com/scl/fi/di72yn79zdpb7h3azdwml/NexaPlay-V1.1.0.apk?rlkey=60tbyy1ww3owmv3qw2hc91vcq&st=wdodpuac&dl=1';
@@ -118,9 +119,9 @@ export function NexaPlayerSection({ navigateTo }: NexaPlayerSectionProps) {
         <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-xs font-semibold text-slate-600 dark:text-slate-300">
           <button 
             onClick={() => navigateTo('apps')}
-            className="text-cyan-600 dark:text-cyan-400 font-bold hover:underline flex items-center space-x-1 cursor-pointer"
+            className="text-cyan-400 font-bold hover:underline flex items-center space-x-1 cursor-pointer"
           >
-            <span>📱 NooriTech Apps Suite</span>
+            <span>📱 Noori Tech</span>
           </button>
           <span>/</span>
           <span className="text-slate-900 dark:text-white font-bold">Nexa Player (Pro Media)</span>
@@ -592,6 +593,13 @@ export function NexaPlayerSection({ navigateTo }: NexaPlayerSectionProps) {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* ========================================================
+          6. Community Reviews & User Feedback for Nexa Player Pro
+      ======================================================== */}
+      <div id="reviews-section" className="pt-6 relative z-10 scroll-mt-24">
+        <ReviewsSection appId="nexa-player" appName="Nexa Player Pro" themeColor="cyan" />
       </div>
 
       {/* Sponsored Native Banner Ad */}

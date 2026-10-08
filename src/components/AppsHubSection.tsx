@@ -37,8 +37,9 @@ import {
   Share2
 } from 'lucide-react';
 import { trackApkDownload, useLiveDownloads } from './LiveStatsBanner';
-import { ReviewsSection } from './ReviewsSection';
+import { useAppReviewsStats } from './ReviewsSection';
 import { AdsterraNativeAd } from './AdsterraNativeAd';
+import { EcosystemComboHub } from './EcosystemComboHub';
 import { useLiveApkSize } from '../lib/useLiveApkSize';
 
 const NEXA_APK_URL = 'https://www.dropbox.com/scl/fi/di72yn79zdpb7h3azdwml/NexaPlay-V1.1.0.apk?rlkey=60tbyy1ww3owmv3qw2hc91vcq&st=wdodpuac&dl=1';
@@ -49,6 +50,8 @@ interface AppsHubProps {
   onOpenNexaPlayer?: () => void;
   onNavigateToUniversalPrivacy: () => void;
   onNavigateToUniversalTerms: () => void;
+  onNavigateToContact?: () => void;
+  onNavigateToAbout?: () => void;
 }
 
 export interface AppItem {
@@ -76,7 +79,9 @@ export function AppsHubSection({
   onOpenRaqamFlow, 
   onOpenNexaPlayer,
   onNavigateToUniversalPrivacy, 
-  onNavigateToUniversalTerms 
+  onNavigateToUniversalTerms,
+  onNavigateToContact,
+  onNavigateToAbout
 }: AppsHubProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
@@ -88,6 +93,8 @@ export function AppsHubSection({
   const nexaDownloads = useLiveDownloads('nexa-player');
   const { sizeStr: nexaLiveSize } = useLiveApkSize(NEXA_APK_URL, 28118800);
   const { sizeStr: raqamLiveSize } = useLiveApkSize(RAQAM_APK_URL, 35465412);
+  const raqamReviewStats = useAppReviewsStats('raqam-flow');
+  const nexaReviewStats = useAppReviewsStats('nexa-player');
 
   const apps: AppItem[] = [
     {
@@ -162,18 +169,18 @@ export function AppsHubSection({
       <div className="bg-slate-900/90 backdrop-blur-xl rounded-2xl p-4 sm:p-6 border border-white/10 shadow-lg mb-8 w-full">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           
-          {/* APKPure Marketplace Title */}
-          <div className="flex items-center space-x-3 self-start md:self-center">
-            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white shadow-md shadow-emerald-500/20">
-              <Layers className="w-6 h-6" />
+          {/* Official Noori Tech Marketplace Title */}
+          <div className="flex items-center space-x-3.5 self-start md:self-center">
+            <div className="w-12 h-12 rounded-2xl overflow-hidden border border-amber-400/40 p-0.5 shadow-md flex items-center justify-center bg-slate-950 flex-shrink-0">
+              <img src="/noori-tech-logo.jpg" alt="Noori Tech Logo" className="w-full h-full object-cover rounded-[14px]" />
             </div>
             <div>
               <div className="flex items-center space-x-2">
                 <span className="text-xl sm:text-2xl font-black tracking-tight text-white">
-                  Noori<span className="text-emerald-400">APK</span>
+                  Noori <span className="text-emerald-400">Tech</span>
                 </span>
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
-                  Store
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30">
+                  Official Store
                 </span>
               </div>
               <p className="text-[11px] sm:text-xs text-slate-400">
@@ -279,13 +286,36 @@ export function AppsHubSection({
 
                   {/* 4 Stat Badges for Card (2 cols on mobile, 4 cols on tablet/desktop) */}
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 w-full">
-                    <div className="p-3.5 rounded-2xl bg-[#10222a] border border-slate-800/80 text-center flex flex-col items-center justify-center">
-                      <div className="text-amber-400 text-base sm:text-lg font-black flex items-center justify-center space-x-1">
-                        <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                        <span>{app.rating}</span>
-                      </div>
-                      <div className="text-[10px] sm:text-[11px] text-slate-400 font-medium mt-0.5">Rating</div>
-                    </div>
+                    {/* Live Community Rating Badge linked to app's reviews */}
+                    {(() => {
+                      const stats = app.id === 'raqam-flow' ? raqamReviewStats : nexaReviewStats;
+                      return (
+                        <div 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (app.id === 'raqam-flow') {
+                              onOpenRaqamFlow();
+                            } else if (onOpenNexaPlayer) {
+                              onOpenNexaPlayer();
+                            }
+                            setTimeout(() => {
+                              const el = document.getElementById('reviews-section');
+                              if (el) el.scrollIntoView({ behavior: 'smooth' });
+                            }, 350);
+                          }}
+                          className="p-3.5 rounded-2xl bg-[#10222a] border border-slate-800/80 hover:border-amber-400/80 hover:bg-[#162f3a] text-center flex flex-col items-center justify-center transition-all cursor-pointer group/rating shadow-sm"
+                          title="Click to view verified community user reviews"
+                        >
+                          <div className="text-amber-400 text-base sm:text-lg font-black flex items-center justify-center space-x-1 group-hover/rating:scale-105 transition-transform">
+                            <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                            <span>{stats.rating}</span>
+                          </div>
+                          <div className="text-[10px] sm:text-[11px] text-amber-300 font-bold mt-0.5 group-hover/rating:underline">
+                            {stats.totalReviews} Reviews
+                          </div>
+                        </div>
+                      );
+                    })()}
 
                     <div className="p-3.5 rounded-2xl bg-[#10222a] border border-slate-800/80 text-center flex flex-col items-center justify-center">
                       <div className="text-white text-base sm:text-lg font-black font-mono">
@@ -316,12 +346,25 @@ export function AppsHubSection({
       </div>
 
       {/* ========================================================
-          3. Sponsored Ads & Community Reviews - Full Width
+          3. Sponsored Ads - Full Width
       ======================================================== */}
       {!searchQuery && (
-        <div className="w-full mb-12 space-y-10">
+        <div className="w-full mb-10">
           <AdsterraNativeAd />
-          <ReviewsSection />
+        </div>
+      )}
+
+      {/* ========================================================
+          4. Ecosystem Combo Hub: Pillars, Comparison & Roadmap
+      ======================================================== */}
+      {!searchQuery && (
+        <div className="w-full mb-8">
+          <EcosystemComboHub 
+            onOpenRaqamFlow={onOpenRaqamFlow}
+            onOpenNexaPlayer={onOpenNexaPlayer}
+            onNavigateToContact={onNavigateToContact}
+            onNavigateToAbout={onNavigateToAbout}
+          />
         </div>
       )}
     </div>
