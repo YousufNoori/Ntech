@@ -26,8 +26,8 @@ export function AdsterraNativeAd() {
 
   return (
     <div className="w-full py-4 flex justify-center">
-      <div className="max-w-4xl w-full bg-[#08131a]/60 border border-slate-800/90 rounded-[28px] p-6 shadow-2xl relative overflow-hidden text-center backdrop-blur-xl">
-        <span className="inline-block text-[10px] font-bold text-emerald-400 dark:text-cyan-400 uppercase tracking-widest mb-3">
+      <div className="w-full bg-[#08131a]/60 border border-slate-800/90 rounded-[28px] p-6 sm:p-8 shadow-2xl relative overflow-hidden text-center backdrop-blur-xl">
+        <span className="inline-block text-[10px] font-bold text-emerald-400 uppercase tracking-widest mb-3">
           Sponsored Recommendation
         </span>
         <div ref={adRef} className="w-full min-h-[150px] flex items-center justify-center text-slate-400 text-xs">

@@ -29,8 +29,8 @@ export function AdsterraBanner728x90() {
 
   return (
     <div className="w-full py-4 flex flex-col items-center justify-center">
-      <div className="max-w-5xl w-full bg-[#08131a]/60 border border-slate-800/90 rounded-[28px] p-5 shadow-2xl relative overflow-hidden text-center backdrop-blur-xl flex flex-col items-center">
-        <span className="inline-block text-[10px] font-bold text-emerald-400 dark:text-cyan-400 uppercase tracking-widest mb-3">
+      <div className="w-full bg-[#08131a]/60 border border-slate-800/90 rounded-[28px] p-5 sm:p-6 shadow-2xl relative overflow-hidden text-center backdrop-blur-xl flex flex-col items-center">
+        <span className="inline-block text-[10px] font-bold text-emerald-400 uppercase tracking-widest mb-3">
           Sponsored Leaderboard
         </span>
         {/* Responsive horizontal scroll wrapper to avoid overflow on mobile */}

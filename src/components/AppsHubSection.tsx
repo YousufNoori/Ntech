@@ -154,36 +154,36 @@ export function AppsHubSection({
   });
 
   return (
-    <div className="animate-in fade-in duration-500 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+    <div className="animate-in fade-in duration-500 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 w-full">
       
       {/* ========================================================
           1. APKPure Style Search & Navigation Header Bar
       ======================================================== */}
-      <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-white/10 shadow-lg mb-6">
+      <div className="bg-slate-900/90 backdrop-blur-xl rounded-2xl p-4 sm:p-6 border border-white/10 shadow-lg mb-8 w-full">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           
           {/* APKPure Marketplace Title */}
           <div className="flex items-center space-x-3 self-start md:self-center">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white shadow-md shadow-emerald-500/20">
+            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white shadow-md shadow-emerald-500/20">
               <Layers className="w-6 h-6" />
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <span className="text-xl font-black tracking-tight text-slate-900 dark:text-white">
-                  Noori<span className="text-emerald-500">APK</span>
+                <span className="text-xl sm:text-2xl font-black tracking-tight text-white">
+                  Noori<span className="text-emerald-400">APK</span>
                 </span>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
                   Store
                 </span>
               </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400">
+              <p className="text-[11px] sm:text-xs text-slate-400">
                 Official Android APK Distribution Hub by Muhammad Yousuf Noori
               </p>
             </div>
           </div>
 
           {/* APKPure Search Bar */}
-          <div className="relative w-full md:max-w-md">
+          <div className="relative w-full md:max-w-lg">
             <div className="relative flex items-center">
               <Search className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" />
               <input
@@ -191,12 +191,12 @@ export function AppsHubSection({
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search apps, APK packages, Khata, POS, Nexa Player..."
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-white/10 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-950 border border-white/10 text-xs sm:text-sm text-white placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-3 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                  className="absolute right-3 text-xs text-slate-400 hover:text-slate-200 cursor-pointer"
                 >
                   ✕
                 </button>
@@ -207,19 +207,19 @@ export function AppsHubSection({
       </div>
 
       {/* ========================================================
-          2. Official Apps Suite Grid (Raqam Flow & Nexa Player Cards)
+          2. Official Apps Suite Grid (Raqam Flow & Nexa Player Cards) - Full Width Responsive
       ======================================================== */}
-      <div className="max-w-4xl mx-auto mb-10">
+      <div className="w-full mb-12">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-2">
             <Sparkles className="w-5 h-5 text-emerald-400" />
-            <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
+            <h2 className="text-2xl sm:text-3xl font-black text-white">
               Our Official Premium Apps
             </h2>
           </div>
         </div>
 
-        <div className="grid sm:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
           {filteredApps.map((app) => (
             <div
               key={app.id}
@@ -236,36 +236,36 @@ export function AppsHubSection({
                   trackApkDownload('raqam-flow');
                 }
               }}
-              className="group relative rounded-[28px] p-[2px] bg-gradient-to-b from-emerald-500 via-teal-400 to-cyan-500 shadow-[0_0_25px_rgba(16,185,129,0.25)] hover:shadow-[0_0_35px_rgba(16,185,129,0.4)] overflow-hidden transition-all duration-300 hover:scale-[1.02] cursor-pointer flex flex-col justify-between"
+              className="group relative rounded-[28px] p-[2px] bg-gradient-to-b from-emerald-500 via-teal-400 to-cyan-500 shadow-[0_0_25px_rgba(16,185,129,0.25)] hover:shadow-[0_0_40px_rgba(16,185,129,0.45)] overflow-hidden transition-all duration-300 hover:scale-[1.015] cursor-pointer flex flex-col justify-between"
             >
-              <div className="bg-[#08131a] rounded-[26px] p-6 text-white relative overflow-hidden group-hover:bg-[#0b1a23] transition-colors flex flex-col items-center text-center h-full justify-between">
+              <div className="bg-[#08131a] rounded-[26px] p-6 sm:p-8 lg:p-10 text-white relative overflow-hidden group-hover:bg-[#0b1a23] transition-colors flex flex-col items-center text-center h-full justify-between">
                 {/* Ambient Background Patterns */}
-                <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none group-hover:bg-emerald-500/20 transition-all"></div>
-                <div className="absolute bottom-0 left-0 w-48 h-48 bg-teal-500/10 rounded-full blur-2xl pointer-events-none"></div>
+                <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none group-hover:bg-emerald-500/20 transition-all"></div>
+                <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
-                <div className="relative z-10 space-y-4 w-full flex flex-col items-center">
+                <div className="relative z-10 space-y-5 w-full flex flex-col items-center">
                   {/* App Icon */}
-                  <div className={`w-20 h-20 sm:w-24 sm:h-24 p-1 flex items-center justify-center overflow-hidden shadow-xl group-hover:scale-105 transition-transform my-1 ${
+                  <div className={`w-24 h-24 sm:w-28 sm:h-28 p-1 flex items-center justify-center overflow-hidden shadow-2xl group-hover:scale-105 transition-transform my-1 ${
                     app.id === 'nexa-player'
                       ? 'rounded-full border-4 border-cyan-400 bg-slate-950 shadow-cyan-500/50'
-                      : 'rounded-[22px] bg-[#0d2222] border-2 border-emerald-400 shadow-emerald-500/30'
+                      : 'rounded-[26px] bg-[#0d2222] border-2 border-emerald-400 shadow-emerald-500/30'
                   }`}>
                     <img 
                       src={app.icon as string} 
                       alt={app.name} 
-                      className={`w-full h-full object-cover ${app.id === 'nexa-player' ? 'rounded-full' : 'rounded-[16px]'}`} 
+                      className={`w-full h-full object-cover ${app.id === 'nexa-player' ? 'rounded-full' : 'rounded-[20px]'}`} 
                     />
                   </div>
 
                   {/* App Brand Information */}
                   <div>
-                    <h3 className="text-xl sm:text-2xl font-black tracking-tight text-white leading-tight group-hover:text-emerald-300 transition-colors">
+                    <h3 className="text-2xl sm:text-3xl font-black tracking-tight text-white leading-tight group-hover:text-emerald-300 transition-colors">
                       {app.name}
                     </h3>
-                    <div className="font-urdu text-base sm:text-lg text-emerald-400 font-semibold mt-1">
+                    <div className="font-urdu text-lg sm:text-xl text-emerald-400 font-semibold mt-1">
                       {app.urduName}
                     </div>
-                    <div className="text-xs text-slate-300 mt-1.5 flex items-center justify-center space-x-1.5 flex-wrap">
+                    <div className="text-xs sm:text-sm text-slate-300 mt-2 flex items-center justify-center space-x-2 flex-wrap">
                       <span>By <strong className="text-slate-100 font-bold">Muhammad Yousuf Noori</strong></span>
                       <span className="text-slate-500">•</span>
                       <span className="text-emerald-400 font-bold">{app.category}</span>
@@ -273,36 +273,36 @@ export function AppsHubSection({
                   </div>
 
                   {/* Tagline & Description */}
-                  <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-normal my-1 text-center line-clamp-3">
+                  <p className="text-sm text-slate-200 leading-relaxed font-normal my-2 text-center max-w-xl">
                     {app.description}
                   </p>
 
-                  {/* 2x2 Grid Stat Badges for Card */}
-                  <div className="grid grid-cols-2 gap-2.5 pt-2 w-full">
-                    <div className="p-3 rounded-2xl bg-[#10222a] border border-slate-800/80 text-center flex flex-col items-center justify-center">
-                      <div className="text-amber-400 text-sm sm:text-base font-black flex items-center justify-center space-x-1">
+                  {/* 4 Stat Badges for Card (2 cols on mobile, 4 cols on tablet/desktop) */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 w-full">
+                    <div className="p-3.5 rounded-2xl bg-[#10222a] border border-slate-800/80 text-center flex flex-col items-center justify-center">
+                      <div className="text-amber-400 text-base sm:text-lg font-black flex items-center justify-center space-x-1">
                         <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
                         <span>{app.rating}</span>
                       </div>
                       <div className="text-[10px] sm:text-[11px] text-slate-400 font-medium mt-0.5">Rating</div>
                     </div>
 
-                    <div className="p-3 rounded-2xl bg-[#10222a] border border-slate-800/80 text-center flex flex-col items-center justify-center">
-                      <div className="text-white text-sm sm:text-base font-black font-mono">
+                    <div className="p-3.5 rounded-2xl bg-[#10222a] border border-slate-800/80 text-center flex flex-col items-center justify-center">
+                      <div className="text-white text-base sm:text-lg font-black font-mono">
                         {app.size}
                       </div>
                       <div className="text-[10px] sm:text-[11px] text-slate-400 font-medium mt-0.5">Size (APK)</div>
                     </div>
 
-                    <div className="p-3 rounded-2xl bg-[#10222a] border border-slate-800/80 text-center flex flex-col items-center justify-center">
-                      <div className="text-emerald-400 text-sm sm:text-base font-black">
+                    <div className="p-3.5 rounded-2xl bg-[#10222a] border border-slate-800/80 text-center flex flex-col items-center justify-center">
+                      <div className="text-emerald-400 text-base sm:text-lg font-black">
                         v{app.version}
                       </div>
                       <div className="text-[10px] sm:text-[11px] text-slate-400 font-medium mt-0.5">Version</div>
                     </div>
 
-                    <div className="p-3 rounded-2xl bg-[#10222a] border border-slate-800/80 text-center flex flex-col items-center justify-center">
-                      <div className="text-cyan-400 text-sm sm:text-base font-black">
+                    <div className="p-3.5 rounded-2xl bg-[#10222a] border border-slate-800/80 text-center flex flex-col items-center justify-center">
+                      <div className="text-cyan-400 text-base sm:text-lg font-black">
                         {app.downloadsCount}
                       </div>
                       <div className="text-[10px] sm:text-[11px] text-slate-400 font-medium mt-0.5">Downloads</div>
@@ -316,10 +316,10 @@ export function AppsHubSection({
       </div>
 
       {/* ========================================================
-          3. Sponsored Ads & Community Reviews
+          3. Sponsored Ads & Community Reviews - Full Width
       ======================================================== */}
       {!searchQuery && (
-        <div className="max-w-4xl mx-auto mb-8 space-y-8">
+        <div className="w-full mb-12 space-y-10">
           <AdsterraNativeAd />
           <ReviewsSection />
         </div>

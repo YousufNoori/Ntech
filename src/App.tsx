@@ -20,7 +20,6 @@ export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isDark, setIsDark] = useState(true);
 
   // Derive currentPage from the URL pathname
   const getCurrentPage = (): Page => {
@@ -53,12 +52,8 @@ export default function App() {
   const isRaqamFlowContext = ['raqam-flow', 'about'].includes(currentPage);
 
   useEffect(() => {
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [isDark]);
+    document.documentElement.classList.add('dark');
+  }, []);
 
   const navigateTo = (page: Page) => {
     const paths: Record<Page, string> = {
@@ -83,11 +78,11 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen relative selection:bg-emerald-500/30 selection:text-emerald-900 dark:selection:text-emerald-100 font-sans overflow-x-hidden text-slate-900 dark:text-slate-50 transition-colors duration-500">
-      <ThreeBackground isDark={isDark} />
+    <div className="min-h-screen relative selection:bg-emerald-500/30 selection:text-emerald-100 font-sans overflow-x-hidden text-slate-100 bg-[#050b14]">
+      <ThreeBackground isDark={true} />
       
-      {/* Navbar - Glassmorphic */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/70 dark:bg-slate-950/70 backdrop-blur-xl border-b border-emerald-900/10 dark:border-white/10 shadow-lg transition-colors duration-500">
+      {/* Navbar - Glassmorphic Permanent Dark */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-950/85 backdrop-blur-xl border-b border-white/10 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex justify-between items-center">
           
           {/* Dynamic Brand Logo & Identity */}
@@ -101,12 +96,12 @@ export default function App() {
                 <img src="/logo.png" alt="Raqam Flow Logo" className="w-full h-full object-cover transition-transform group-hover:scale-110" />
               </div>
               <div className="flex flex-col items-start">
-                <span className="text-xl sm:text-2xl font-bold tracking-tight bg-gradient-to-r from-emerald-600 to-teal-500 dark:from-emerald-300 dark:to-teal-100 bg-clip-text text-transparent leading-none">
+                <span className="text-xl sm:text-2xl font-bold tracking-tight bg-gradient-to-r from-emerald-300 to-teal-100 bg-clip-text text-transparent leading-none">
                   Raqam Flow
                 </span>
-                <div className="inline-flex items-center space-x-1.5 px-2 py-0.5 mt-1 rounded-full bg-emerald-100 dark:bg-emerald-500/15 border border-emerald-200 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-[10px] sm:text-[11px] font-semibold backdrop-blur-md">
+                <div className="inline-flex items-center space-x-1.5 px-2 py-0.5 mt-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-[10px] sm:text-[11px] font-semibold backdrop-blur-md">
                   <span className="relative flex h-1.5 w-1.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 dark:bg-emerald-400 opacity-75"></span>
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
                   </span>
                   <span>v1.0.0 Live</span>
@@ -146,10 +141,10 @@ export default function App() {
                 </div>
               </div>
               <div className="flex flex-col items-start">
-                <span className="text-lg sm:text-xl font-black tracking-tight bg-gradient-to-r from-emerald-600 via-teal-500 to-cyan-500 dark:from-emerald-300 dark:via-teal-200 dark:to-cyan-200 bg-clip-text text-transparent leading-none">
+                <span className="text-lg sm:text-xl font-black tracking-tight bg-gradient-to-r from-emerald-300 via-teal-200 to-cyan-200 bg-clip-text text-transparent leading-none">
                   NooriTech Apps
                 </span>
-                <span className="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-semibold tracking-wide mt-0.5">
+                <span className="text-[10px] sm:text-[11px] text-slate-400 font-semibold tracking-wide mt-0.5">
                   Muhammad Yousuf Noori Suite
                 </span>
               </div>
@@ -163,28 +158,13 @@ export default function App() {
               currentPage={currentPage} 
               isRaqamFlowContext={isRaqamFlowContext} 
             />
-            
-            <button 
-              onClick={() => setIsDark(!isDark)}
-              className="p-2.5 rounded-full bg-slate-200/60 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 hover:bg-slate-300/60 dark:hover:bg-slate-700/60 transition-colors cursor-pointer"
-              aria-label="Toggle theme"
-            >
-              {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </button>
           </div>
 
           {/* Mobile Right Controls */}
           <div className="md:hidden flex items-center space-x-2">
             <button 
-              onClick={() => setIsDark(!isDark)}
-              className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-white/10 active:scale-95 transition-transform"
-              aria-label="Toggle theme"
-            >
-              {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-emerald-600" />}
-            </button>
-            <button 
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800/80 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-white/10 active:scale-95 transition-transform"
+              className="p-2 rounded-xl bg-slate-800/80 text-slate-100 border border-white/10 active:scale-95 transition-transform cursor-pointer"
               aria-label="Open menu"
             >
               {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -194,7 +174,7 @@ export default function App() {
 
         {/* Mobile Nav Drawer */}
         {isMenuOpen && (
-          <div className="md:hidden border-t border-slate-200 dark:border-white/10 bg-white/95 dark:bg-slate-950/95 backdrop-blur-2xl px-5 py-6 flex flex-col space-y-3 shadow-2xl animate-in slide-in-from-top-4 duration-300">
+          <div className="md:hidden border-t border-white/10 bg-slate-950/95 backdrop-blur-2xl px-5 py-6 flex flex-col space-y-3 shadow-2xl animate-in slide-in-from-top-4 duration-300">
             <NavLinks 
               navigateTo={navigateTo} 
               currentPage={currentPage} 
@@ -285,8 +265,8 @@ export default function App() {
         <AdsterraBanner728x90 />
       </div>
 
-      {/* Footer - Glassmorphic */}
-      <footer className="relative z-10 bg-white/80 dark:bg-slate-950/80 backdrop-blur-lg border-t border-slate-200 dark:border-white/5 pt-12 pb-8 transition-colors duration-500">
+      {/* Footer - Glassmorphic Permanent Dark */}
+      <footer className="relative z-10 bg-slate-950/90 backdrop-blur-lg border-t border-white/10 pt-12 pb-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             {/* Developer Portfolio Info */}

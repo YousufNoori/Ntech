@@ -167,11 +167,7 @@ export function ThreeBackground({ isDark }: { isDark: boolean }) {
   return (
     <div 
       ref={mountRef} 
-      className={`fixed inset-0 z-0 pointer-events-none transition-colors duration-1000 ${
-        isDark 
-          ? 'bg-[radial-gradient(circle_at_center,#022c22_0%,#020617_100%)]' 
-          : 'bg-[radial-gradient(circle_at_center,#d1fae5_0%,#f8fafc_100%)]'
-      }`}
+      className="fixed inset-0 z-0 pointer-events-none bg-[radial-gradient(circle_at_center,#022c22_0%,#020617_100%)]"
     />
   );
 }
