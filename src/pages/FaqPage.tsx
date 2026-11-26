@@ -1,274 +1,207 @@
 import React, { useState } from 'react';
-import { HelpCircle, ChevronRight, Layers, Banknote } from 'lucide-react';
+import { Search, ChevronDown, X } from 'lucide-react';
+import { PageHeader } from '../components/PageHeader';
 import { Page } from '../types';
 
-export const ContentWrapper = ({ 
-  title, 
-  subTitle, 
-  icon, 
-  children 
-}: { 
-  title: string; 
-  subTitle?: string; 
-  icon: React.ReactNode; 
-  children: React.ReactNode 
-}) => (
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12 animate-in slide-in-from-bottom-8 duration-700">
-    <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-3xl p-5 sm:p-8 md:p-12 shadow-2xl relative overflow-hidden transition-colors duration-500">
-      <div className="absolute top-0 right-0 w-72 h-72 bg-emerald-500/10 dark:bg-emerald-500/5 blur-[100px] rounded-full pointer-events-none"></div>
-      
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8 border-b border-slate-200 dark:border-white/10 pb-4 sm:pb-6 gap-4">
-        <div className="flex items-center space-x-3 sm:space-x-4">
-          <div className="p-3 bg-emerald-100 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 rounded-2xl flex-shrink-0 border border-emerald-500/20">
-            {icon}
-          </div>
-          <div>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">{title}</h2>
-            {subTitle && (
-              <p className="font-urdu text-base sm:text-lg text-emerald-600 dark:text-emerald-400 font-semibold mt-0.5">{subTitle}</p>
-            )}
-          </div>
-        </div>
-      </div>
-      
-      <div className="text-slate-700 dark:text-slate-300 space-y-6 text-sm sm:text-base leading-relaxed">
-        {children}
-      </div>
-    </div>
-  </div>
-);
+const FAQ_DATA = {
+  general: [
+    {
+      q: 'Are NooriTech applications 100% free of invasive advertisements?',
+      a: 'Yes. We strictly ban banners, pop-up videos, and intrusive interstitial ads so both accounting and media workflows stay completely distraction-free.',
+    },
+    {
+      q: 'Where is Muhammad Yousuf Noori (NooriTech) based?',
+      a: 'Muhammad Yousuf Noori is an independent Android software developer based in Pakistan. Every app is designed, compiled, and tested locally.',
+    },
+    {
+      q: 'Can I download and install official APK packages directly?',
+      a: 'Yes. You can download cryptographically signed official APK packages directly from this website, ensuring authentic builds without third-party tampering.',
+    },
+    {
+      q: 'Do NooriTech apps work offline?',
+      a: 'Yes. Offline-first architecture is our core principle. All essential operations in Raqam Flow and Nexa Player Pro run 100% offline with zero lag.',
+    },
+  ],
+  raqam: [
+    {
+      q: 'Is my shop cash book and credit ledger data stored on an external server?',
+      a: 'No. All ledger accounts, customer entries, and daily cash records are stored locally on your device using a sandboxed Room SQLite database.',
+    },
+    {
+      q: 'How secure is the Google Drive Cloud Sync feature?',
+      a: 'It uses official Google OAuth 2.0 to create a private connection between Raqam Flow and your own Google Drive app folder. Only you can access your backup files.',
+    },
+    {
+      q: 'Can I print customer transactions or generate billing PDFs?',
+      a: 'Yes. Raqam Flow exports clean PDF invoices, customer transaction statements, and cashbook reports ready for WhatsApp sharing or printing.',
+    },
+    {
+      q: 'What happens if I lose my phone? Can I recover my credit books?',
+      a: 'Yes. If you enabled Google Drive cloud backup or saved a local backup file, install Raqam Flow on your new phone, sign in, and tap Restore Backup.',
+    },
+  ],
+  nexa: [
+    {
+      q: 'What video formats does Nexa Player Pro support?',
+      a: 'Nexa Player plays MKV, MP4, AVI, MOV, WebM, TS, FLV, and MP3 files natively, including high-bitrate 4K, 8K, and HDR streams.',
+    },
+    {
+      q: 'How does the 10-Band Equalizer improve audio?',
+      a: 'Our audio DSP lets you adjust 10 individual frequency bands in real time, enable Bass Boost, and toggle 3D surround virtualization.',
+    },
+    {
+      q: 'Is there a floating popup / Picture-in-Picture mode?',
+      a: 'Yes. Nexa Player supports Picture-in-Picture (PiP) mode so you can keep watching videos while replying to messages or browsing other apps.',
+    },
+    {
+      q: 'Does it support subtitle downloading and synchronization?',
+      a: 'Yes. Nexa Player includes an online subtitle finder supporting SRT, SSA, and ASS formats with timing synchronization and font styling.',
+    },
+  ],
+};
 
-export function FaqSection({ navigateTo }: { navigateTo?: (p: Page) => void }) {
-  const [activeTab, setActiveTab] = useState<'general' | 'raqam' | 'nexa'>('general');
+type FaqTab = 'general' | 'raqam' | 'nexa';
+
+export default function FaqPage({ navigateTo }: { navigateTo?: (p: Page) => void }) {
+  const [activeTab, setActiveTab] = useState<FaqTab>('general');
   const [searchQuery, setSearchQuery] = useState('');
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
-  const generalFaqs = [
-    {
-      q: "Are NooriTech applications 100% free of invasive advertisements?",
-      a: "Yes, absolutely! We strictly ban banners, pop-up videos, or intrusive interstitial ads. We believe in providing a clean, premium, distraction-free environment for both productivity and media playback."
-    },
-    {
-      q: "Where is Muhammad Yousuf Noori (NooriTech) located?",
-      a: "Muhammad Yousuf Noori is an independent premium Android software developer located in Pakistan (🇵🇰). All apps are designed, compiled, and tested locally."
-    },
-    {
-      q: "Can I download and install official APK packages directly?",
-      a: "Yes! You can download official, cryptographically signed APK packages directly from our official web portfolio, which guarantees authentic, secure builds."
-    },
-    {
-      q: "Do NooriTech apps work offline?",
-      a: "Yes! Offline-first architecture is our core engineering pillar. All critical operations in Raqam Flow and Nexa Player work 100% offline with zero lag, using fast local databases."
-    }
-  ];
-
-  const raqamFaqs = [
-    {
-      q: "Is my shop's cash book and credit ledger data stored on a server?",
-      a: "No! All ledger accounts, customer entries, cash flows, and credit files are saved strictly on your local device's high-speed Room SQLite database. We do not operate any background data-harvesting servers."
-    },
-    {
-      q: "How secure is the Google Drive Cloud Sync feature?",
-      a: "Highly secure. It leverages official Google OAuth 2.0 to establish a private connection between the app and your personal Google Drive account. The data is saved inside an isolated, encrypted application folder where only you have access."
-    },
-    {
-      q: "Can I print customer transactions or generate billing records?",
-      a: "Yes! Raqam Flow allows you to export clean PDF invoices, customer transaction ledgers, and cash book spreadsheets, which you can easily print or share."
-    },
-    {
-      q: "What happens if I lose my phone? Can I recover my credit books?",
-      a: "Yes! If you have enabled Google Drive cloud sync or have saved a local JSON/ZIP backup, simply install Raqam Flow on your new phone, log in, and click 'Restore Backup' to retrieve your accounts."
-    }
-  ];
-
-  const nexaFaqs = [
-    {
-      q: "What video formats does Nexa Player Pro support?",
-      a: "Nexa Player features universal media decoding. It natively plays MKV, MP4, AVI, MOV, WebM, TS, FLV, and MP3 files. It supports advanced 4K, 8K, and HDR playback with zero frame-drops."
-    },
-    {
-      q: "How does 10-Band Hardware Equalizer improve audio?",
-      a: "Our advanced DSP audio core communicates directly with your device's audio hardware, allowing real-time equalization, heavy bass-boosting, 3D surround sound virtualization, and vocal clarity enhancement."
-    },
-    {
-      q: "Is there a floating popup/picture-in-picture mode?",
-      a: "Yes! Nexa Player supports floating Picture-in-Picture (PIP) mode, allowing you to watch videos or listen to lectures while replying to messages or browsing other apps."
-    },
-    {
-      q: "Does it support subtitle downloading and synchronization?",
-      a: "Yes! Nexa Player includes an online subtitle finder where you can search, download, and synchronize multi-language subtitles (SRT, SSA, ASS) directly inside the video interface."
-    }
-  ];
-
-  const getFaqsByTab = () => {
-    switch (activeTab) {
-      case 'raqam': return raqamFaqs;
-      case 'nexa': return nexaFaqs;
-      case 'general':
-      default:
-        return generalFaqs;
-    }
-  };
-
-  const filteredFaqs = getFaqsByTab().filter(faq =>
-    faq.q.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    faq.a.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredFaqs = FAQ_DATA[activeTab].filter(
+    (faq) =>
+      faq.q.toLowerCase().includes(searchQuery.trim().toLowerCase()) ||
+      faq.a.toLowerCase().includes(searchQuery.trim().toLowerCase())
   );
 
-  const getThemeColors = () => {
-    switch (activeTab) {
-      case 'raqam':
-        return {
-          accent: 'text-emerald-500 dark:text-emerald-400',
-          bgAccent: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
-          buttonActive: 'bg-emerald-500 text-slate-950 shadow-lg shadow-emerald-500/30 border-emerald-500',
-          hover: 'hover:bg-emerald-500/10'
-        };
-      case 'nexa':
-        return {
-          accent: 'text-cyan-500 dark:text-cyan-400',
-          bgAccent: 'bg-cyan-500/15 text-cyan-400 border-cyan-500/30',
-          buttonActive: 'bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/30 border-cyan-500',
-          hover: 'hover:bg-cyan-500/10'
-        };
-      case 'general':
-      default:
-        return {
-          accent: 'text-teal-500 dark:text-teal-400',
-          bgAccent: 'bg-teal-500/15 text-teal-400 border-teal-500/30',
-          buttonActive: 'bg-teal-500 text-slate-950 shadow-lg shadow-teal-500/30 border-teal-500',
-          hover: 'hover:bg-teal-500/10'
-        };
-    }
-  };
+  const accentText = activeTab === 'nexa' ? 'text-cyan-400' : 'text-emerald-400';
 
-  const colors = getThemeColors();
-
-  const content = (
-    <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-3xl p-6 md:p-8 shadow-xl transition-all duration-300">
-      
-      {/* Header and Interactive Search */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200 dark:border-white/5">
-        <div className="flex items-center space-x-3">
-          <div className={`w-12 h-12 rounded-2xl ${colors.bgAccent} border flex items-center justify-center transition-colors shadow-inner`}>
-            <HelpCircle className="w-6 h-6" />
-          </div>
-          <div>
-            <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Frequently Asked Questions</h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Find answers to common questions about NooriTech apps and services.</p>
-          </div>
-        </div>
-
-        {/* Live Search Bar inside FAQs */}
-        <div className="relative w-full md:max-w-xs">
+  return (
+    <div className="page-enter max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8">
+      <PageHeader
+        kicker="Knowledge Base"
+        title="Frequently Asked Questions"
+        description="Quick answers about NooriTech applications, offline data security, cloud backups, and Android APK installation."
+        breadcrumbLabel="FAQ"
+        navigateTo={navigateTo}
+      >
+        <div className="relative w-full lg:w-72">
+          <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search questions..."
-            className="w-full pl-9 pr-4 py-2.5 text-xs sm:text-sm rounded-xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 transition-all"
+            aria-label="Search FAQs"
+            className="w-full pl-10 pr-9 py-2.5 rounded-xl bg-[#0b111c] border border-white/10 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400 transition-colors"
           />
-          <HelpCircle className="w-4 h-4 text-slate-400 absolute left-3 top-3.5" />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white cursor-pointer"
+              aria-label="Clear search"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
         </div>
+      </PageHeader>
+
+      {/* Segmented Category Tabs */}
+      <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-[#0b111c] border border-white/[0.08]">
+        {[
+          { id: 'general' as const, label: 'General' },
+          { id: 'raqam' as const, label: 'Raqam Flow' },
+          { id: 'nexa' as const, label: 'Nexa Player' },
+        ].map((tab) => {
+          const active = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => {
+                setActiveTab(tab.id);
+                setOpenIndex(0);
+              }}
+              className={`px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-colors cursor-pointer whitespace-nowrap ${
+                active
+                  ? tab.id === 'nexa'
+                    ? 'bg-cyan-400 text-slate-950'
+                    : 'bg-emerald-500 text-slate-950'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              {tab.label}
+            </button>
+          );
+        })}
       </div>
 
-      {/* Interactive Tabs Switcher */}
-      <div className="grid grid-cols-3 gap-2 mb-8 bg-slate-100 dark:bg-slate-950 p-1.5 rounded-2xl border border-slate-200 dark:border-white/5">
-        <button
-          onClick={() => { setActiveTab('general'); setOpenIndex(0); }}
-          className={`py-3 rounded-xl text-xs sm:text-sm font-bold flex flex-col sm:flex-row items-center justify-center gap-1.5 transition-all cursor-pointer ${
-            activeTab === 'general' ? colors.buttonActive : 'text-slate-500 dark:text-slate-400 hover:text-slate-800'
-          }`}
-        >
-          <Layers className="w-4 h-4" />
-          <span>General</span>
-        </button>
-        <button
-          onClick={() => { setActiveTab('raqam'); setOpenIndex(0); }}
-          className={`py-3 rounded-xl text-xs sm:text-sm font-bold flex flex-col sm:flex-row items-center justify-center gap-1.5 transition-all cursor-pointer ${
-            activeTab === 'raqam' ? colors.buttonActive : 'text-slate-500 dark:text-slate-400 hover:text-slate-800'
-          }`}
-        >
-          <Banknote className="w-4 h-4" />
-          <span>Raqam Flow</span>
-        </button>
-        <button
-          onClick={() => { setActiveTab('nexa'); setOpenIndex(0); }}
-          className={`py-3 rounded-xl text-xs sm:text-sm font-bold flex flex-col sm:flex-row items-center justify-center gap-1.5 transition-all cursor-pointer ${
-            activeTab === 'nexa' ? colors.buttonActive : 'text-slate-500 dark:text-slate-400 hover:text-slate-800'
-          }`}
-        >
-          <img src="/nexa-player.jpg" alt="Nexa" className="w-4.5 h-4.5 rounded-full object-cover inline-block" />
-          <span>Nexa Player</span>
-        </button>
-      </div>
-
-      {/* FAQs List with Collapsible Accordion */}
-      {filteredFaqs.length === 0 ? (
-        <div className="text-center py-12 bg-slate-50 dark:bg-slate-950/40 rounded-2xl border border-dashed border-slate-200 dark:border-white/5">
-          <HelpCircle className="w-10 h-10 text-slate-400 mx-auto mb-3" />
-          <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">No matching FAQs found.</p>
-          <p className="text-xs text-slate-500 mt-1">Try searching for other words or clear the search query.</p>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {filteredFaqs.map((faq, i) => {
-            const isOpen = openIndex === i;
-            return (
-              <div 
-                key={i} 
-                className={`rounded-2xl border transition-all duration-300 bg-slate-50/50 dark:bg-slate-950/40 ${
-                  isOpen 
-                    ? 'border-emerald-500/30 dark:border-emerald-500/20 shadow-md shadow-emerald-500/5' 
-                    : 'border-slate-200 dark:border-white/5'
-                }`}
-              >
-                <button
-                  onClick={() => setOpenIndex(isOpen ? null : i)}
-                  className="w-full px-5 py-4 text-left flex items-center justify-between space-x-3 transition-colors cursor-pointer rounded-2xl"
-                >
-                  <span className="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white flex items-start space-x-3">
-                    <span className={`font-black ${colors.accent} shrink-0 mt-0.5`}>Q.</span>
-                    <span className="leading-snug">{faq.q}</span>
-                  </span>
-                  <ChevronRight className={`w-5 h-5 text-slate-400 transition-transform duration-300 flex-shrink-0 ${isOpen ? 'rotate-90 ' + colors.accent : ''}`} />
-                </button>
-                {isOpen && (
-                  <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed border-t border-slate-200/50 dark:border-white/5 animate-in fade-in slide-in-from-top-1 duration-200">
-                    {faq.a}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      {/* Support Desk Redirect */}
-      {navigateTo && (
-        <div className="p-5 rounded-2xl bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-cyan-500/10 border border-slate-200 dark:border-white/5 mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="text-center sm:text-left">
-            <h4 className="font-extrabold text-slate-900 dark:text-white text-sm">Still have questions or need technical support?</h4>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Get directly in touch with Muhammad Yousuf Noori on our Support Desk.</p>
+      {/* Accordion List */}
+      <div className="rounded-2xl bg-[#0b111c] border border-white/[0.08] p-6 sm:p-8">
+        {filteredFaqs.length === 0 ? (
+          <div className="text-center py-10 space-y-2">
+            <p className="text-base font-semibold text-white">No matching questions found</p>
+            <p className="text-sm text-slate-400">
+              Try another keyword or clear your search query.
+            </p>
+            <button
+              type="button"
+              onClick={() => setSearchQuery('')}
+              className="mt-2 px-4 py-2 rounded-lg bg-white text-slate-950 text-xs font-semibold cursor-pointer"
+            >
+              Clear Search
+            </button>
           </div>
-          <button
-            onClick={() => navigateTo('contact')}
-            className="px-5 py-2.5 rounded-xl bg-emerald-600 text-white font-black text-xs hover:bg-emerald-500 transition-all shadow-md shadow-emerald-600/20 cursor-pointer shrink-0"
-          >
-            Contact Support Desk
-          </button>
+        ) : (
+          <div className="divide-y divide-white/[0.07]">
+            {filteredFaqs.map((faq, idx) => {
+              const isOpen = openIndex === idx;
+              return (
+                <div key={idx} className="py-5 first:pt-0 last:pb-0">
+                  <button
+                    type="button"
+                    onClick={() => setOpenIndex(isOpen ? null : idx)}
+                    className="w-full flex items-start justify-between gap-4 text-left cursor-pointer"
+                  >
+                    <span className="text-sm sm:text-base font-semibold text-white leading-snug">
+                      <span className={`font-mono mr-2.5 ${accentText}`}>
+                        {String(idx + 1).padStart(2, '0')}.
+                      </span>
+                      {faq.q}
+                    </span>
+                    <ChevronDown
+                      className={`w-4 h-4 text-slate-400 shrink-0 mt-1 transition-transform ${
+                        isOpen ? `rotate-180 ${accentText}` : ''
+                      }`}
+                    />
+                  </button>
+                  {isOpen && (
+                    <p className="mt-3 pl-8 text-sm text-slate-400 leading-relaxed">{faq.a}</p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* Support Redirect */}
+      <div className="rounded-2xl bg-[#0b111c] border border-white/[0.08] p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h3 className="text-base font-bold text-white">Still have questions?</h3>
+          <p className="text-sm text-slate-400 mt-0.5">
+            Reach out to Muhammad Yousuf Noori on our official support desk.
+          </p>
         </div>
-      )}
+        <button
+          type="button"
+          onClick={() => navigateTo?.('contact')}
+          className="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold text-xs sm:text-sm transition-colors cursor-pointer shrink-0 whitespace-nowrap"
+        >
+          Contact Support Desk
+        </button>
+      </div>
     </div>
   );
-
-  if (navigateTo) {
-    return <ContentWrapper title="Frequently Asked Questions (FAQ)" icon={<HelpCircle className="w-8 h-8" />}>{content}</ContentWrapper>;
-  }
-
-  return content;
-}
-
-export default function FaqPage({ navigateTo }: { navigateTo?: (p: Page) => void }) {
-  return <FaqSection navigateTo={navigateTo} />;
 }

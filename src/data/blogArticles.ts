@@ -1,4 +1,4 @@
-import { Page } from '../App';
+import { Page } from '../types';
 
 export interface BlogArticle {
   id: string;

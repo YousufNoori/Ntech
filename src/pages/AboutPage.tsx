@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Info, Sparkles, UserCheck, Layers, MessageCircle, Check, Loader2, Send } from 'lucide-react';
-import { ContentWrapper } from './FaqPage';
+import { UserCheck, ArrowRight, Check, Loader2, Send, AlertCircle } from 'lucide-react';
+import { PageHeader } from '../components/PageHeader';
+import { Page } from '../types';
 
 function SuggestionForm() {
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
@@ -17,15 +18,15 @@ function SuggestionForm() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          Accept: 'application/json',
         },
         body: JSON.stringify({
           Name: formData.name,
           Email: formData.email,
           Subject: formData.subject,
           Suggestion: formData.message,
-          _subject: `New Raqam Flow Suggestion: ${formData.subject || 'App Feedback'}`
-        })
+          _subject: `New NooriTech Suggestion: ${formData.subject || 'App Feedback'}`,
+        }),
       });
 
       if (response.ok) {
@@ -33,38 +34,39 @@ function SuggestionForm() {
         setFormData({ name: '', email: '', subject: '', message: '' });
       } else {
         setStatus('error');
-        setErrorMessage('Could not send message right now. Please try again.');
+        setErrorMessage('Could not send your suggestion right now. Please try again shortly.');
       }
     } catch {
       setStatus('error');
-      setErrorMessage('Network error. Please check your connection and try again.');
+      setErrorMessage('Network error. Please check your internet connection and try again.');
     }
   };
 
   return (
-    <div className="mt-8 sm:mt-12 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-white/10 rounded-2xl p-5 sm:p-8 shadow-lg relative overflow-hidden">
-      <div className="flex items-center space-x-3 mb-6">
-        <div className="w-10 h-10 rounded-xl bg-emerald-500/10 dark:bg-emerald-400/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center flex-shrink-0 border border-emerald-500/20">
-          <MessageCircle className="w-5 h-5" />
-        </div>
-        <div>
-          <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-slate-900 dark:text-white">Send Your Suggestion about App</h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400">Directly sends your feedback to our developer inbox</p>
-        </div>
+    <section className="rounded-2xl bg-[#0b111c] border border-white/[0.08] p-6 sm:p-8 space-y-6">
+      <div className="border-b border-white/[0.08] pb-5">
+        <p className="text-xs font-semibold text-emerald-400 mb-1">Direct Developer Feedback</p>
+        <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+          Send Your Suggestion
+        </h2>
+        <p className="text-sm text-slate-400 mt-1">
+          Share feature requests or improvements directly with Muhammad Yousuf Noori.
+        </p>
       </div>
 
       {status === 'success' ? (
-        <div className="p-6 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-500/30 rounded-xl text-center space-y-3">
-          <div className="w-12 h-12 rounded-full bg-emerald-500 text-white flex items-center justify-center mx-auto shadow-md">
-            <Check className="w-6 h-6" />
+        <div className="p-6 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-center space-y-3">
+          <div className="w-10 h-10 rounded-full bg-emerald-500 text-slate-950 flex items-center justify-center mx-auto">
+            <Check className="w-5 h-5" />
           </div>
-          <h4 className="text-lg font-bold text-emerald-800 dark:text-emerald-200">Shukriya! Suggestion Sent Successfully</h4>
-          <p className="text-sm text-emerald-700 dark:text-emerald-300">
+          <h3 className="text-base font-bold text-white">Shukriya! Suggestion Sent</h3>
+          <p className="text-sm text-slate-300">
             Aapki suggestion directly developer ke inbox par receive ho chuki hai.
           </p>
           <button
+            type="button"
             onClick={() => setStatus('idle')}
-            className="mt-3 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-lg transition-colors cursor-pointer"
+            className="mt-2 px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-semibold transition-colors cursor-pointer"
           >
             Send Another Suggestion
           </button>
@@ -73,68 +75,81 @@ function SuggestionForm() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Your Name</label>
+              <label htmlFor="about-name" className="block text-xs font-medium text-slate-300 mb-1.5">
+                Your Name
+              </label>
               <input
+                id="about-name"
                 type="text"
                 required
                 placeholder="Aapka Naam"
                 value={formData.name}
-                onChange={e => setFormData({ ...formData, name: e.target.value })}
-                className="w-full bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors"
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="w-full bg-[#070b12] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400 transition-colors"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Email Address</label>
+              <label htmlFor="about-email" className="block text-xs font-medium text-slate-300 mb-1.5">
+                Email Address
+              </label>
               <input
+                id="about-email"
                 type="email"
                 required
                 placeholder="example@gmail.com"
                 value={formData.email}
-                onChange={e => setFormData({ ...formData, email: e.target.value })}
-                className="w-full bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors"
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                className="w-full bg-[#070b12] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400 transition-colors"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Subject</label>
+            <label htmlFor="about-subject" className="block text-xs font-medium text-slate-300 mb-1.5">
+              Subject
+            </label>
             <input
+              id="about-subject"
               type="text"
               required
-              placeholder="e.g. New Feature Idea / Ledger Bug / Feedback"
+              placeholder="e.g. New Feature Idea / Ledger Bug / Nexa Player Feedback"
               value={formData.subject}
-              onChange={e => setFormData({ ...formData, subject: e.target.value })}
-              className="w-full bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors"
+              onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+              className="w-full bg-[#070b12] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400 transition-colors"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Your Suggestion (Body Text)</label>
+            <label htmlFor="about-message" className="block text-xs font-medium text-slate-300 mb-1.5">
+              Your Suggestion
+            </label>
             <textarea
+              id="about-message"
               required
               rows={4}
-              placeholder="Raqam Flow app ke baare mein apni suggestions yahan likhein..."
+              placeholder="NooriTech apps ke baare mein apni suggestion yahan likhein..."
               value={formData.message}
-              onChange={e => setFormData({ ...formData, message: e.target.value })}
-              className="w-full bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors resize-none"
+              onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+              className="w-full bg-[#070b12] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400 transition-colors resize-none"
             />
           </div>
 
           {status === 'error' && (
-            <div className="p-3 bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400 text-xs rounded-xl">
-              {errorMessage}
+            <div className="flex items-center gap-2 p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{errorMessage}</span>
             </div>
           )}
 
           <button
             type="submit"
             disabled={status === 'loading'}
-            className="w-full flex items-center justify-center space-x-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30 transition-all duration-200 disabled:opacity-60 cursor-pointer"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold text-sm transition-colors cursor-pointer disabled:opacity-60"
           >
             {status === 'loading' ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                <span>Sending Suggestion to Inbox...</span>
+                <span>Sending...</span>
               </>
             ) : (
               <>
@@ -145,169 +160,169 @@ function SuggestionForm() {
           </button>
         </form>
       )}
-    </div>
+    </section>
   );
 }
 
-export function AboutSection() {
-  return (
-    <ContentWrapper title="About Us & Developer Profile" icon={<Info className="w-8 h-8" />}>
-      {/* 1. Header Billboard: NooriTech Corporate Vision */}
-      <div className="relative rounded-[32px] p-[2px] bg-gradient-to-br from-emerald-500 via-teal-400 to-cyan-500 shadow-[0_0_40px_rgba(16,185,129,0.2)] overflow-hidden mb-8">
-        <div className="bg-[#05111a] rounded-[30px] p-6 sm:p-10 text-white relative overflow-hidden text-center sm:text-left">
-          {/* Ambient Glows */}
-          <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none"></div>
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none"></div>
+export default function AboutPage({ navigateTo }: { navigateTo?: (page: Page) => void }) {
+  const philosophy = [
+    {
+      num: '01.',
+      title: 'Zero Ad Distraction',
+      desc: 'We ban intrusive banners, video pop-ups, and interstitial ads across all applications so workflows stay focused and clean.',
+    },
+    {
+      num: '02.',
+      title: 'Absolute User Privacy',
+      desc: 'Your financial logs and personal media remain strictly on your device or inside your private Google Drive—never harvested or sold.',
+    },
+    {
+      num: '03.',
+      title: 'Native Hardware Speed',
+      desc: 'Built directly on Android Jetpack, Room SQLite, and HW/HW+ media decoders to stay responsive on every Android device.',
+    },
+  ];
 
-          <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
-            <div className="space-y-4 max-w-2xl">
-              <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>Next-Gen Mobile Ecosystem</span>
-              </span>
-              <h2 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
-                Empowering Users with <span className="text-emerald-400">Noori Tech</span> Apps
+  return (
+    <div className="page-enter max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-12">
+      <PageHeader
+        kicker="Developer Profile & Studio Vision"
+        title="About NooriTech"
+        description="Independent Android software engineering studio building offline-first accounting tools and high-performance media applications from Pakistan."
+        breadcrumbLabel="About Us"
+        navigateTo={navigateTo}
+        metadata={['Muhammad Yousuf Noori', 'Pakistan', 'Offline-First Studio']}
+      />
+
+      {/* Founder Profile */}
+      <section className="rounded-2xl bg-[#0b111c] border border-white/[0.08] p-6 sm:p-8">
+        <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
+          <div className="w-24 h-24 rounded-2xl bg-[#0e1624] border border-emerald-400/30 flex items-center justify-center shrink-0">
+            <UserCheck className="w-10 h-10 text-emerald-400" />
+          </div>
+
+          <div className="space-y-4 text-center md:text-left flex-1">
+            <div>
+              <p className="text-xs font-semibold text-emerald-400">
+                Founder &amp; Lead Mobile Architect
+              </p>
+              <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mt-0.5">
+                Muhammad Yousuf Noori
               </h2>
-              <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
-                Noori Tech is a premier software engineering studio dedicated to building high-performance, secure, offline-first, and completely ad-free utility applications. We put user privacy and smooth user experience above everything else.
+            </div>
+
+            <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
+              Assalam-o-Alaikum! I am Muhammad Yousuf Noori, the independent software engineer behind NooriTech. My focus is crafting practical, fast, and reliable Android applications for daily shop bookkeeping and high-definition media playback—engineered with clean code, zero ads, and strict respect for user privacy.
+            </p>
+
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-3 gap-y-1 text-xs font-mono text-slate-400 pt-1">
+              <span>Kotlin &amp; Java</span>
+              <span className="text-slate-600" aria-hidden="true">·</span>
+              <span>Android Jetpack</span>
+              <span className="text-slate-600" aria-hidden="true">·</span>
+              <span>Room SQLite</span>
+              <span className="text-slate-600" aria-hidden="true">·</span>
+              <span>React &amp; TypeScript</span>
+              <span className="text-slate-600" aria-hidden="true">·</span>
+              <span>Firebase</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Applications Ecosystem */}
+      <section className="space-y-5">
+        <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+          Our Application Suite
+        </h2>
+        <div className="grid md:grid-cols-2 gap-6">
+          <div className="rounded-2xl bg-[#0b111c] border border-white/[0.08] hover:border-emerald-400/35 p-6 flex flex-col justify-between gap-6 transition-colors">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3.5">
+                <img
+                  src="/logo.png"
+                  alt="Raqam Flow Logo"
+                  referrerPolicy="no-referrer"
+                  className="w-12 h-12 rounded-xl border border-white/15 object-cover"
+                />
+                <div>
+                  <h3 className="text-lg font-bold text-white">Raqam Flow</h3>
+                  <p className="text-xs text-emerald-400 font-medium">
+                    Offline Digital Ledger &amp; Cashbook
+                  </p>
+                </div>
+              </div>
+              <p className="text-sm text-slate-400 leading-relaxed">
+                Designed for retail merchants, distributors, and wholesalers across Pakistan to record credit (Udhar), track daily cash flow, export PDF statements, and back up securely to Google Drive.
               </p>
             </div>
-            
-            {/* Logo Group */}
-            <div className="flex -space-x-3 items-center">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl border-4 border-amber-400/80 bg-slate-950 p-0.5 shadow-xl shadow-amber-500/30 flex items-center justify-center overflow-hidden z-20">
-                <img src="/noori-tech-logo.jpg" alt="Noori Tech Logo" className="w-full h-full object-cover rounded-xl" />
+
+            <button
+              type="button"
+              onClick={() => navigateTo?.('raqam-flow')}
+              className="inline-flex items-center gap-2 text-xs font-semibold text-emerald-400 hover:text-emerald-300 cursor-pointer"
+            >
+              <span>Open Raqam Flow Page</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
+          <div className="rounded-2xl bg-[#0b111c] border border-white/[0.08] hover:border-cyan-400/35 p-6 flex flex-col justify-between gap-6 transition-colors">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3.5">
+                <img
+                  src="/nexa-player.jpg"
+                  alt="Nexa Player Logo"
+                  referrerPolicy="no-referrer"
+                  className="w-12 h-12 rounded-full border border-white/15 object-cover"
+                />
+                <div>
+                  <h3 className="text-lg font-bold text-white">Nexa Player Pro</h3>
+                  <p className="text-xs text-cyan-400 font-medium">
+                    4K &amp; 8K Ultra HD Media Player
+                  </p>
+                </div>
               </div>
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-4 border-cyan-400 bg-slate-950 p-0.5 shadow-lg shadow-cyan-500/30 flex items-center justify-center overflow-hidden z-10">
-                <img src="/nexa-player.jpg" alt="Nexa Player Logo" className="w-full h-full object-cover rounded-full" />
-              </div>
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl border-4 border-emerald-400 bg-slate-950 p-1 shadow-lg shadow-emerald-500/30 flex items-center justify-center overflow-hidden">
-                <img src="/logo.png" alt="Raqam Flow Logo" className="w-full h-full object-cover rounded-xl" />
-              </div>
+              <p className="text-sm text-slate-400 leading-relaxed">
+                Hardware-accelerated video and music player with a 10-band equalizer, bass booster, subtitle downloader, floating picture-in-picture window, and background playback.
+              </p>
             </div>
+
+            <button
+              type="button"
+              onClick={() => navigateTo?.('nexa-player')}
+              className="inline-flex items-center gap-2 text-xs font-semibold text-cyan-400 hover:text-cyan-300 cursor-pointer"
+            >
+              <span>Open Nexa Player Page</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* 2. Founder & Chief Engineer Section */}
-      <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-3xl p-6 sm:p-10 shadow-xl mb-8">
-        <div className="flex flex-col lg:flex-row items-center gap-8">
-          {/* Developer Photo/Icon */}
-          <div className="relative shrink-0">
-            <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-full p-1 bg-gradient-to-tr from-emerald-500 to-cyan-500 shadow-xl flex items-center justify-center relative overflow-hidden">
-              <div className="w-full h-full bg-slate-950 rounded-full flex items-center justify-center">
-                <UserCheck className="w-14 h-14 text-emerald-400" />
-              </div>
+      {/* Engineering Philosophy */}
+      <section className="space-y-5">
+        <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+          Core Engineering Philosophy
+        </h2>
+        <div className="grid sm:grid-cols-3 gap-5">
+          {philosophy.map((item) => (
+            <div
+              key={item.num}
+              className="rounded-2xl bg-[#0b111c] border border-white/[0.08] p-6 space-y-2.5"
+            >
+              <span className="text-xs font-mono font-semibold text-emerald-400 block">
+                {item.num}
+              </span>
+              <h3 className="text-base font-bold text-white">{item.title}</h3>
+              <p className="text-sm text-slate-400 leading-relaxed">{item.desc}</p>
             </div>
-            <div className="absolute -bottom-2 right-1/2 translate-x-1/2 px-3 py-1 rounded-full bg-emerald-500 text-slate-950 text-[10px] font-black tracking-wider uppercase shadow-md">
-              Founder
-            </div>
-          </div>
-
-          <div className="space-y-4 text-center lg:text-left flex-1">
-            <div className="space-y-1">
-              <h3 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">Muhammad Yousuf Noori</h3>
-              <p className="text-emerald-600 dark:text-emerald-400 text-sm font-bold tracking-wide">Chief Software Engineer & Architect, NooriTech</p>
-            </div>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-              Assalam-o-Alaikum! I am Muhammad Yousuf Noori, the independent developer behind NooriTech. My goal is to craft premium-grade Android applications tailored for daily utilities, accounting, and high-performance playback. Every app under the NooriTech suite is written with clean code, modern material architecture, and undergoes strict performance audits to ensure zero latency and maximum dependability.
-            </p>
-            <div className="flex flex-wrap gap-2.5 justify-center lg:justify-start">
-              <span className="px-3 py-1 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-bold border border-slate-200 dark:border-white/5 font-mono">Kotlin & Java</span>
-              <span className="px-3 py-1 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-bold border border-slate-200 dark:border-white/5 font-mono">React & TS</span>
-              <span className="px-3 py-1 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-bold border border-slate-200 dark:border-white/5 font-mono">Android SDK</span>
-              <span className="px-3 py-1 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-bold border border-slate-200 dark:border-white/5 font-mono">SQLite & Firebase</span>
-            </div>
-          </div>
+          ))}
         </div>
-      </div>
+      </section>
 
-      {/* 3. The Premium Applications Suite */}
-      <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-6 flex items-center gap-2">
-        <Layers className="w-6 h-6 text-emerald-500" />
-        <span>Our Premium App Ecosystem</span>
-      </h3>
-
-      <div className="grid md:grid-cols-2 gap-6 mb-10">
-        {/* Raqam Flow Card */}
-        <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-3xl p-6 sm:p-8 shadow-lg flex flex-col justify-between hover:border-emerald-500/40 transition-colors">
-          <div className="space-y-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-14 h-14 rounded-2xl bg-slate-950 p-1 border border-emerald-400/50 shadow-md flex items-center justify-center overflow-hidden">
-                <img src="/logo.png" alt="Raqam Flow Logo" className="w-full h-full object-cover rounded-xl" />
-              </div>
-              <div>
-                <h4 className="text-lg font-black text-slate-900 dark:text-white">Raqam Flow (Flagship)</h4>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Offline Ledger & Cash Book</p>
-              </div>
-            </div>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-              An offline-first, highly secure digital ledger companion designed specifically for retail merchants, distributors, and wholesalers across Pakistan. Record credit (Udhar), cash in/out (Roznamcha), generate instant PDF bills, and automate WhatsApp payment notifications.
-            </p>
-          </div>
-          <div className="mt-4 pt-4 border-t border-slate-100 dark:border-white/5 flex items-center justify-between">
-            <span className="text-xs text-slate-400 font-bold">100% Secure & Ads Free</span>
-            <span className="px-3 py-1 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold text-xs border border-emerald-500/25">Accounting</span>
-          </div>
-        </div>
-
-        {/* Nexa Player Card */}
-        <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-3xl p-6 sm:p-8 shadow-lg flex flex-col justify-between hover:border-cyan-500/40 transition-colors">
-          <div className="space-y-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-14 h-14 rounded-full border border-cyan-400 shadow-md flex items-center justify-center overflow-hidden bg-slate-950">
-                <img src="/nexa-player.jpg" alt="Nexa Player Logo" className="w-full h-full object-cover rounded-full" />
-              </div>
-              <div>
-                <h4 className="text-lg font-black text-slate-900 dark:text-white">Nexa Player (Pro Media)</h4>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Ultra HD Media & Video Player</p>
-              </div>
-            </div>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-              A powerful, next-generation 4K & 8K Ultra HD media player for Android with lightning-fast hardware acceleration. Featuring a professional 10-band audio equalizer, bass booster, multi-language subtitle downloader, floating pop-up player (PIP), and background playback mode.
-            </p>
-          </div>
-          <div className="mt-4 pt-4 border-t border-slate-100 dark:border-white/5 flex items-center justify-between">
-            <span className="text-xs text-slate-400 font-bold">4K 60FPS Hardware Decoders</span>
-            <span className="px-3 py-1 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 font-bold text-xs border border-cyan-500/25">Media Player</span>
-          </div>
-        </div>
-      </div>
-
-      {/* 4. Engineering Pillars & Philosophical Strengths */}
-      <div className="bg-slate-50 dark:bg-slate-900/40 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-white/5 mb-8">
-        <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mb-6 text-center">NooriTech Core Engineering Philosophy</h3>
-        <div className="grid sm:grid-cols-3 gap-6">
-          <div className="space-y-2 text-center sm:text-left">
-            <div className="w-10 h-10 rounded-xl bg-rose-500/15 text-rose-500 flex items-center justify-center mx-auto sm:mx-0 font-bold">01</div>
-            <h4 className="font-extrabold text-slate-900 dark:text-white text-base">Zero Ad Distraction</h4>
-            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-              We completely ban invasive banners, videos, or pop-up ads from our applications. Enjoy clean, professional interfaces designed solely for productivity.
-            </p>
-          </div>
-          <div className="space-y-2 text-center sm:text-left">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-500 flex items-center justify-center mx-auto sm:mx-0 font-bold">02</div>
-            <h4 className="font-extrabold text-slate-900 dark:text-white text-base">Absolute Privacy</h4>
-            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-              Your financial logs and personal files stay exclusively on your device or your personal Google Drive. No telemetry, no selling logs, zero background trackers.
-            </p>
-          </div>
-          <div className="space-y-2 text-center sm:text-left">
-            <div className="w-10 h-10 rounded-xl bg-cyan-500/15 text-cyan-500 flex items-center justify-center mx-auto sm:mx-0 font-bold">03</div>
-            <h4 className="font-extrabold text-slate-900 dark:text-white text-base">High-Performance Core</h4>
-            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-              We leverage raw hardware capabilities like Android Jetpack, Room SQLite, HW/HW+ decoders, and high-performance rendering engines to run lightning fast.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Interactive Suggestion Form */}
+      {/* Suggestion Form */}
       <SuggestionForm />
-    </ContentWrapper>
+    </div>
   );
-}
-
-export default function AboutPage() {
-  return <AboutSection />;
 }

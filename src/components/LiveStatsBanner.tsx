@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Users, Download, Activity, Sparkles, TrendingUp, ShieldCheck, RefreshCw, Film } from 'lucide-react';
+import { Users, Download } from 'lucide-react';
 import { db } from '../lib/firebase';
-import { collection, doc, setDoc, deleteDoc, onSnapshot, increment, serverTimestamp } from 'firebase/firestore';
+import {
+  collection,
+  doc,
+  setDoc,
+  deleteDoc,
+  onSnapshot,
+  increment,
+  serverTimestamp,
+} from 'firebase/firestore';
 
 export type TrackableApp = 'raqam-flow' | 'nexa-player';
 
-// Unique session ID for this browser tab/window
 const getSessionId = () => {
   let id = sessionStorage.getItem('rf_session_id');
   if (!id) {
@@ -15,42 +22,47 @@ const getSessionId = () => {
   return id;
 };
 
-// Global helper to track download click anywhere in the app
 export const trackApkDownload = async (appId: TrackableApp = 'raqam-flow') => {
   try {
     const docId = appId === 'nexa-player' ? 'nexa_downloads' : 'downloads';
     const statsRef = doc(db, 'stats', docId);
-    await setDoc(statsRef, {
-      count: increment(1),
-      lastDownloadedAt: serverTimestamp(),
-      appName: appId === 'nexa-player' ? 'Nexa Player Pro' : 'Raqam Flow'
-    }, { merge: true });
+    await setDoc(
+      statsRef,
+      {
+        count: increment(1),
+        lastDownloadedAt: serverTimestamp(),
+        appName: appId === 'nexa-player' ? 'Nexa Player Pro' : 'Raqam Flow',
+      },
+      { merge: true }
+    );
   } catch (err) {
     console.warn('Error incrementing download counter:', err);
   }
 };
 
-// Hook to subscribe to real-time live download count from Firestore
 export function useLiveDownloads(appId: TrackableApp = 'raqam-flow') {
   const [downloadCount, setDownloadCount] = useState<number>(0);
 
   useEffect(() => {
     const docId = appId === 'nexa-player' ? 'nexa_downloads' : 'downloads';
     const statsRef = doc(db, 'stats', docId);
-    
-    // Ensure document exists
+
     setDoc(statsRef, { count: increment(0) }, { merge: true }).catch(() => {});
 
-    const unsubscribeStats = onSnapshot(statsRef, (docSnap) => {
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        if (typeof data.count === 'number') {
-          setDownloadCount(data.count);
+    const unsubscribeStats = onSnapshot(
+      statsRef,
+      (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          if (typeof data.count === 'number') {
+            setDownloadCount(data.count);
+          }
         }
+      },
+      (err) => {
+        console.warn('Live download count snapshot error:', err);
       }
-    }, (err) => {
-      console.warn('Live download count snapshot error:', err);
-    });
+    );
 
     return () => unsubscribeStats();
   }, [appId]);
@@ -64,63 +76,65 @@ export interface LiveStatsBannerProps {
   theme?: 'emerald' | 'cyan';
 }
 
-export function LiveStatsBanner({ appId = 'raqam-flow', title, theme }: LiveStatsBannerProps) {
+export function LiveStatsBanner({
+  appId = 'raqam-flow',
+  title,
+  theme,
+}: LiveStatsBannerProps) {
   const isNexa = appId === 'nexa-player' || theme === 'cyan';
   const [liveVisitors, setLiveVisitors] = useState<number>(1);
-  const [downloadCount, setDownloadCount] = useState<number>(0); // 100% real live counter
-  const [downloadPulse, setDownloadPulse] = useState<boolean>(false);
+  const [downloadCount, setDownloadCount] = useState<number>(0);
   const [isLiveConnected, setIsLiveConnected] = useState<boolean>(true);
 
-  // 1. Live Presence Heartbeat & Real-time Visitor Listener
   useEffect(() => {
     const sessionId = getSessionId();
     const presenceRef = doc(db, 'presence', sessionId);
 
-    // Function to send heartbeat to Firestore
     const sendHeartbeat = async () => {
       try {
-        await setDoc(presenceRef, {
-          lastSeen: Date.now(),
-          userAgent: navigator.userAgent ? navigator.userAgent.substring(0, 50) : 'Web'
-        }, { merge: true });
+        await setDoc(
+          presenceRef,
+          {
+            lastSeen: Date.now(),
+            userAgent: navigator.userAgent ? navigator.userAgent.substring(0, 50) : 'Web',
+          },
+          { merge: true }
+        );
       } catch (err) {
         console.warn('Presence heartbeat error:', err);
       }
     };
 
-    // Send initial heartbeat
     sendHeartbeat();
-
-    // Send heartbeat every 15 seconds
     const interval = setInterval(sendHeartbeat, 15000);
 
-    // Clean up on tab close
     const handleUnload = () => {
       deleteDoc(presenceRef).catch(() => {});
     };
     window.addEventListener('beforeunload', handleUnload);
 
-    // Real-time listener on presence collection
     const presenceColl = collection(db, 'presence');
-    const unsubscribePresence = onSnapshot(presenceColl, (snapshot) => {
-      const now = Date.now();
-      let activeCount = 0;
-      
-      snapshot.forEach((docSnap) => {
-        const data = docSnap.data();
-        // Active if heartbeat received within last 45 seconds
-        if (data && data.lastSeen && (now - data.lastSeen < 45000)) {
-          activeCount++;
-        }
-      });
+    const unsubscribePresence = onSnapshot(
+      presenceColl,
+      (snapshot) => {
+        const now = Date.now();
+        let activeCount = 0;
 
-      // Guarantee at least 1 (the current user themselves)
-      setLiveVisitors(Math.max(1, activeCount));
-      setIsLiveConnected(true);
-    }, (err) => {
-      console.warn('Live presence snapshot error:', err);
-      setIsLiveConnected(false);
-    });
+        snapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          if (data && data.lastSeen && now - data.lastSeen < 45000) {
+            activeCount++;
+          }
+        });
+
+        setLiveVisitors(Math.max(1, activeCount));
+        setIsLiveConnected(true);
+      },
+      (err) => {
+        console.warn('Live presence snapshot error:', err);
+        setIsLiveConnected(false);
+      }
+    );
 
     return () => {
       clearInterval(interval);
@@ -130,136 +144,72 @@ export function LiveStatsBanner({ appId = 'raqam-flow', title, theme }: LiveStat
     };
   }, []);
 
-  // 2. Real-time Download Counter Listener for specified app
   useEffect(() => {
     const docId = isNexa ? 'nexa_downloads' : 'downloads';
     const statsRef = doc(db, 'stats', docId);
-    
-    // Ensure document exists with base count if empty
+
     setDoc(statsRef, { count: increment(0) }, { merge: true }).catch(() => {});
 
-    const unsubscribeStats = onSnapshot(statsRef, (docSnap) => {
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        const dbCount = typeof data.count === 'number' ? data.count : 0;
-        
-        setDownloadCount((prev) => {
-          if (prev !== dbCount && prev >= 0) {
-            setDownloadPulse(true);
-            setTimeout(() => setDownloadPulse(false), 1500);
-          }
-          return dbCount;
-        });
+    const unsubscribeStats = onSnapshot(
+      statsRef,
+      (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          const dbCount = typeof data.count === 'number' ? data.count : 0;
+          setDownloadCount(dbCount);
+        }
+      },
+      (err) => {
+        console.warn('Stats snapshot error:', err);
       }
-    }, (err) => {
-      console.warn('Stats snapshot error:', err);
-    });
+    );
 
     return () => unsubscribeStats();
   }, [isNexa]);
 
   const bannerTitle = title || (isNexa ? 'Nexa Player Live Metrics' : 'Raqam Flow Live Metrics');
+  const accentText = isNexa ? 'text-cyan-400' : 'text-emerald-400';
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 relative z-10">
-      <div className={`relative overflow-hidden rounded-3xl ${
-        isNexa 
-          ? 'bg-gradient-to-r from-slate-900/90 via-slate-900/95 to-slate-950/90 dark:from-[#05131d]/90 dark:via-[#092232]/80 dark:to-slate-950/90 border border-cyan-500/30 shadow-[0_10px_30px_rgba(6,182,212,0.15)]'
-          : 'bg-gradient-to-r from-slate-900/90 via-slate-900/95 to-slate-950/90 dark:from-slate-900/80 dark:via-emerald-950/40 dark:to-slate-950/80 border border-emerald-500/30 shadow-[0_10px_30px_rgba(16,185,129,0.15)]'
-      } p-6 sm:p-8 backdrop-blur-2xl transition-all`}>
-        
-        {/* Background Decorative Glow */}
-        <div className={`absolute top-0 right-1/4 w-96 h-96 ${isNexa ? 'bg-cyan-500/10' : 'bg-emerald-500/10'} blur-[120px] rounded-full pointer-events-none`}></div>
-        <div className={`absolute bottom-0 left-10 w-64 h-64 ${isNexa ? 'bg-teal-500/10' : 'bg-teal-500/10'} blur-[100px] rounded-full pointer-events-none`}></div>
+    <div className="rounded-2xl bg-[#0b111c] border border-white/[0.08] p-6 sm:p-8">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="space-y-1.5">
+          <p className={`text-xs font-semibold ${accentText}`}>
+            Real-Time Cloud Metrics
+          </p>
+          <h3 className="text-xl font-bold text-white tracking-tight">
+            {bannerTitle}
+          </h3>
+          <p className="text-xs sm:text-sm text-slate-400">
+            Synchronized live via Firebase Cloud Firestore.
+          </p>
+        </div>
 
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
-          
-          {/* Section Header */}
-          <div className="text-center md:text-left space-y-2">
-            <div className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full ${
-              isNexa ? 'bg-cyan-500/20 border border-cyan-500/40 text-cyan-300' : 'bg-emerald-500/20 border border-emerald-500/40 text-emerald-300'
-            } text-xs font-bold tracking-wider uppercase`}>
-              <Activity className={`w-3.5 h-3.5 animate-pulse ${isNexa ? 'text-cyan-400' : 'text-emerald-400'}`} />
-              <span>Real-Time Cloud Stats</span>
-            </div>
-            <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center justify-center md:justify-start gap-2">
-              <span>{bannerTitle}</span>
-              {isNexa ? <Sparkles className="w-5 h-5 text-cyan-400" /> : <Sparkles className="w-5 h-5 text-amber-400" />}
-            </h3>
-            <p className="text-xs sm:text-sm text-slate-300 font-light max-w-md">
-              Live updates directly synchronized via Google Firebase Cloud Database.
-            </p>
-          </div>
-
-          {/* Stats Cards Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full md:w-auto">
-            
-            {/* 1. Live Visitors Card */}
-            <div className={`relative group bg-slate-800/80 dark:bg-slate-900/80 border ${
-              isNexa ? 'border-cyan-500/30 hover:border-cyan-400/60' : 'border-emerald-500/30 hover:border-emerald-400/60'
-            } rounded-2xl p-4 sm:p-5 flex items-center space-x-4 shadow-lg transition-all hover:scale-[1.02]`}>
-              <div className="relative flex-shrink-0">
-                <div className={`w-12 h-12 rounded-2xl ${
-                  isNexa ? 'bg-cyan-500/20 border border-cyan-500/40 text-cyan-400' : 'bg-emerald-500/20 border border-emerald-500/40 text-emerald-400'
-                } flex items-center justify-center shadow-inner`}>
-                  <Users className="w-6 h-6" />
-                </div>
+        <div className="grid grid-cols-2 gap-4 sm:gap-6 w-full md:w-auto">
+          <div className="rounded-xl bg-[#0e1624] border border-white/[0.06] px-5 py-4 flex items-center gap-3.5">
+            <Users className={`w-5 h-5 ${accentText} shrink-0`} />
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-mono tabular-nums text-2xl font-bold text-white">
+                  {liveVisitors}
+                </span>
                 {isLiveConnected && (
-                  <span className="absolute -top-1 -right-1 flex h-4 w-4">
-                    <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${isNexa ? 'bg-cyan-400' : 'bg-emerald-400'} opacity-75`}></span>
-                    <span className={`relative inline-flex rounded-full h-4 w-4 ${isNexa ? 'bg-cyan-500' : 'bg-emerald-500'} border-2 border-slate-900`}></span>
-                  </span>
+                  <span className={`w-2 h-2 rounded-full ${isNexa ? 'bg-cyan-400' : 'bg-emerald-400'}`} />
                 )}
               </div>
-              <div>
-                <div className="flex items-center space-x-2">
-                  <span className="text-2xl sm:text-3xl font-black text-white tracking-tight font-mono">
-                    {liveVisitors}
-                  </span>
-                  <span className={`inline-flex items-center text-[10px] font-bold uppercase px-2 py-0.5 rounded-md ${
-                    isNexa ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40' : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                  }`}>
-                    Online Now
-                  </span>
-                </div>
-                <div className="text-xs text-slate-300 font-medium flex items-center mt-0.5">
-                  <span className={`w-1.5 h-1.5 rounded-full ${isNexa ? 'bg-cyan-400' : 'bg-emerald-400'} mr-1.5 animate-pulse`}></span>
-                  Live Website Visitors
-                </div>
-              </div>
+              <div className="text-xs text-slate-400">Active Visitors</div>
             </div>
-
-            {/* 2. Total Downloads Counter Card */}
-            <div className={`relative group bg-slate-800/80 dark:bg-slate-900/80 border ${
-              downloadPulse 
-                ? (isNexa ? 'border-cyan-400 ring-2 ring-cyan-400/50' : 'border-amber-400 ring-2 ring-amber-400/50') 
-                : (isNexa ? 'border-teal-500/30 hover:border-teal-400/60' : 'border-teal-500/30 hover:border-teal-400/60')
-            } rounded-2xl p-4 sm:p-5 flex items-center space-x-4 shadow-lg transition-all hover:scale-[1.02]`}>
-              <div className={`w-12 h-12 rounded-2xl ${
-                isNexa ? 'bg-cyan-500/20 border border-cyan-500/40 text-cyan-300' : 'bg-teal-500/20 border border-teal-500/40 text-teal-300'
-              } flex items-center justify-center shadow-inner flex-shrink-0`}>
-                <Download className={`w-6 h-6 ${downloadPulse ? (isNexa ? 'animate-bounce text-cyan-300' : 'animate-bounce text-amber-400') : ''}`} />
-              </div>
-              <div>
-                <div className="flex items-center space-x-2">
-                  <span className="text-2xl sm:text-3xl font-black text-white tracking-tight font-mono">
-                    {downloadCount.toLocaleString()}
-                  </span>
-                  <span className={`inline-flex items-center text-[10px] font-bold uppercase px-2 py-0.5 rounded-md ${
-                    isNexa ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40' : 'bg-teal-500/20 text-teal-300 border border-teal-500/40'
-                  }`}>
-                    <TrendingUp className="w-3 h-3 mr-1" /> Verified
-                  </span>
-                </div>
-                <div className="text-xs text-slate-300 font-medium flex items-center mt-0.5">
-                  <ShieldCheck className={`w-3.5 h-3.5 ${isNexa ? 'text-cyan-400' : 'text-teal-400'} mr-1`} />
-                  Total App Downloads
-                </div>
-              </div>
-            </div>
-
           </div>
 
+          <div className="rounded-xl bg-[#0e1624] border border-white/[0.06] px-5 py-4 flex items-center gap-3.5">
+            <Download className={`w-5 h-5 ${accentText} shrink-0`} />
+            <div>
+              <div className="font-mono tabular-nums text-2xl font-bold text-white">
+                {downloadCount.toLocaleString()}
+              </div>
+              <div className="text-xs text-slate-400">Total Downloads</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
