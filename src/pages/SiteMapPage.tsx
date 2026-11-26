@@ -116,6 +116,12 @@ const SITE_MAP_GROUPS: {
         routeLabel: '/cookie-policy',
         desc: 'Clear statement confirming zero advertising cookies, zero trackers, and essential local storage only.',
       },
+      {
+        label: 'Account & Data Deletion (Raqam Flow)',
+        path: 'delete-account',
+        routeLabel: '/delete-account',
+        desc: 'Instructions to request permanent deletion of your Raqam Flow account and Firebase login data.',
+      },
     ],
   },
 ];
@@ -129,7 +135,7 @@ export default function SiteMapPage({ navigateTo }: SiteMapPageProps) {
         description="Jump directly to any standalone product page, help tutorial, technical blog, or legal document across NooriTech."
         breadcrumbLabel="Site Map"
         navigateTo={navigateTo}
-        metadata={['12 Dedicated Pages', '1-Click Navigation']}
+        metadata={['13 Dedicated Pages', '1-Click Navigation']}
       />
 
       <div className="grid md:grid-cols-2 gap-6">

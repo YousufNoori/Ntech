@@ -12,4 +12,5 @@ export type Page =
   | 'faq' 
   | 'sitemap' 
   | 'blogs' 
-  | 'help-center';
+  | 'help-center'
+  | 'delete-account';

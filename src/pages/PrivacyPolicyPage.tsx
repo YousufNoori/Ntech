@@ -102,26 +102,36 @@ export default function PrivacyPolicyPage({ navigateTo }: { navigateTo: (page: P
         ))}
       </div>
 
-      {/* Privacy Office Contact */}
-      <div className="rounded-2xl bg-[#0b111c] border border-white/[0.08] p-6 space-y-2">
-        <h3 className="text-sm font-bold text-white">Developer Privacy Office</h3>
-        <p className="text-xs sm:text-sm text-slate-400">
-          For privacy inquiries regarding any NooriTech application, contact Muhammad Yousuf Noori directly:
-        </p>
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-mono pt-1">
-          <a href="mailto:yousufnoor469@gmail.com" className="text-emerald-400 hover:underline">
-            yousufnoor469@gmail.com
-          </a>
-          <span className="text-slate-600" aria-hidden="true">·</span>
-          <a
-            href="https://wa.me/923022827364"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-emerald-400 hover:underline"
-          >
-            WhatsApp: +92 302 2827364
-          </a>
+      {/* Privacy Office Contact & Account Deletion Link */}
+      <div className="rounded-2xl bg-[#0b111c] border border-white/[0.08] p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="space-y-2">
+          <h3 className="text-sm font-bold text-white">Developer Privacy Office</h3>
+          <p className="text-xs sm:text-sm text-slate-400">
+            For privacy inquiries regarding any NooriTech application, contact Muhammad Yousuf Noori directly:
+          </p>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-mono pt-1">
+            <a href="mailto:yousufnoor469@gmail.com" className="text-emerald-400 hover:underline">
+              yousufnoor469@gmail.com
+            </a>
+            <span className="text-slate-600" aria-hidden="true">·</span>
+            <a
+              href="https://wa.me/923022827364"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-emerald-400 hover:underline"
+            >
+              WhatsApp: +92 302 2827364
+            </a>
+          </div>
         </div>
+
+        <button
+          type="button"
+          onClick={() => navigateTo('delete-account')}
+          className="px-4 py-2.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 text-xs font-semibold text-white transition-colors cursor-pointer whitespace-nowrap shrink-0"
+        >
+          Account &amp; Data Deletion →
+        </button>
       </div>
     </div>
   );

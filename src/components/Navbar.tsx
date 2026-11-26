@@ -41,6 +41,7 @@ const MOBILE_GROUPS: { title: string; items: { id: Page; label: string }[] }[] =
       { id: 'privacy', label: 'Privacy Policy' },
       { id: 'terms', label: 'Terms & Conditions' },
       { id: 'cookie-policy', label: 'Cookie Policy' },
+      { id: 'delete-account', label: 'Account Deletion' },
     ],
   },
 ];

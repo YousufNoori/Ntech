@@ -20,6 +20,7 @@ const SiteMapPage = lazy(() => import('./pages/SiteMapPage'));
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
 const TermsPage = lazy(() => import('./pages/TermsPage'));
 const CookiePolicyPage = lazy(() => import('./pages/CookiePolicyPage'));
+const AccountDeletionPage = lazy(() => import('./pages/AccountDeletionPage'));
 
 export default function App() {
   const navigate = useNavigate();
@@ -42,6 +43,13 @@ export default function App() {
       return 'terms';
     }
     if (path === '/cookie-policy') return 'cookie-policy';
+    if (
+      path === '/delete-account' ||
+      path === '/account-deletion' ||
+      path === '/raqam-flow/delete-account'
+    ) {
+      return 'delete-account';
+    }
     return 'apps';
   };
 
@@ -73,6 +81,9 @@ export default function App() {
         break;
       case 'cookie-policy':
         document.title = 'Cookie Policy - NooriTech';
+        break;
+      case 'delete-account':
+        document.title = 'Account & Data Deletion - Raqam Flow';
         break;
       case 'sitemap':
         document.title = 'Site Map - NooriTech';
@@ -112,6 +123,7 @@ export default function App() {
       privacy: '/privacy',
       terms: '/terms',
       'cookie-policy': '/cookie-policy',
+      'delete-account': '/delete-account',
       'universal-privacy': '/privacy',
       'universal-terms': '/terms',
     };
@@ -175,6 +187,18 @@ export default function App() {
             <Route
               path="/cookie-policy"
               element={<CookiePolicyPage navigateTo={navigateTo} />}
+            />
+            <Route
+              path="/delete-account"
+              element={<AccountDeletionPage navigateTo={navigateTo} />}
+            />
+            <Route
+              path="/account-deletion"
+              element={<AccountDeletionPage navigateTo={navigateTo} />}
+            />
+            <Route
+              path="/raqam-flow/delete-account"
+              element={<AccountDeletionPage navigateTo={navigateTo} />}
             />
 
             {/* Fallback Catch-All Route to prevent blank 404 screen */}

@@ -188,6 +188,15 @@ export function Footer({ navigateTo }: FooterProps) {
                   Cookie Policy
                 </button>
               </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => navigateTo('delete-account')}
+                  className="hover:text-white transition-colors cursor-pointer"
+                >
+                  Account Deletion
+                </button>
+              </li>
             </ul>
           </div>
         </div>

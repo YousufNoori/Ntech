@@ -25,7 +25,7 @@ const PhoneShowcase3D = lazy(() =>
 );
 
 const RAQAM_APK_URL =
-  'https://www.dropbox.com/scl/fi/rtwneeiwbk9qnlu4j2y1y/Raqam-Flow-Ap-Ka-Apna-Digital-Khata.apk?rlkey=ro137r9km6qpm00h9og9rdw2k&st=5qsf9njc&dl=1';
+  'https://www.dropbox.com/scl/fi/ohi3izn66uu6jtt6vss6q/Raqam-Flow.apk?rlkey=mda3boiif0epvj8rain9mcuuf&st=sw60ry1k&dl=1';
 
 const FEATURES = [
   {
@@ -184,7 +184,7 @@ export default function RaqamFlowPage({ navigateTo }: { navigateTo: (p: Page) =>
           <div className="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3">
             <a
               href={RAQAM_APK_URL}
-              download="Raqam-Flow-Digital-Khata.apk"
+              download="Raqam-Flow.apk"
               onClick={() => trackApkDownload('raqam-flow')}
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm sm:text-base transition-colors whitespace-nowrap"
             >

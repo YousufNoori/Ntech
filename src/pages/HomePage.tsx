@@ -24,7 +24,7 @@ import { useVersionConfig } from '../lib/useVersionConfig';
 const NEXA_APK_URL =
   'https://www.dropbox.com/scl/fi/di72yn79zdpb7h3azdwml/NexaPlay-V1.1.0.apk?rlkey=60tbyy1ww3owmv3qw2hc91vcq&st=wdodpuac&dl=1';
 const RAQAM_APK_URL =
-  'https://www.dropbox.com/scl/fi/rtwneeiwbk9qnlu4j2y1y/Raqam-Flow-Ap-Ka-Apna-Digital-Khata.apk?rlkey=ro137r9km6qpm00h9og9rdw2k&st=5qsf9njc&dl=1';
+  'https://www.dropbox.com/scl/fi/ohi3izn66uu6jtt6vss6q/Raqam-Flow.apk?rlkey=mda3boiif0epvj8rain9mcuuf&st=sw60ry1k&dl=1';
 
 interface HomePageProps {
   navigateTo: (page: Page) => void;
@@ -68,7 +68,7 @@ export default function HomePage({ navigateTo }: HomePageProps) {
         'PIN code & biometric fingerprint lock',
       ],
       downloadUrl: RAQAM_APK_URL,
-      apkFilename: 'Raqam-Flow-Digital-Khata.apk',
+      apkFilename: 'Raqam-Flow.apk',
     },
     {
       id: 'nexa-player' as const,
@@ -212,7 +212,7 @@ export default function HomePage({ navigateTo }: HomePageProps) {
     <div className="page-enter max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-20">
       {/* 1. Editorial Hero & Search Control */}
       <section className="space-y-8">
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-8 border-b border-white/[0.08]">
+        <div className="pb-8 border-b border-white/[0.08]">
           <div className="max-w-3xl space-y-4">
             <p className="text-xs font-semibold text-emerald-400 tracking-wide">
               Official Android Software Studio · Muhammad Yousuf Noori
@@ -223,23 +223,6 @@ export default function HomePage({ navigateTo }: HomePageProps) {
             <p className="text-base sm:text-lg text-slate-400 leading-relaxed max-w-2xl">
               Download verified, ad-free Android applications directly from NooriTech—from digital shop accounting with Raqam Flow to 8K hardware-accelerated media playback with Nexa Player Pro.
             </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-3 shrink-0">
-            <button
-              type="button"
-              onClick={() => navigateTo('raqam-flow')}
-              className="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold text-sm transition-colors cursor-pointer whitespace-nowrap"
-            >
-              Open Raqam Flow
-            </button>
-            <button
-              type="button"
-              onClick={() => navigateTo('nexa-player')}
-              className="px-5 py-2.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 text-white font-semibold text-sm transition-colors cursor-pointer whitespace-nowrap"
-            >
-              Open Nexa Player
-            </button>
           </div>
         </div>
 
